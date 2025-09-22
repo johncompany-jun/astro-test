@@ -1,0 +1,26 @@
+---
+const heroImage = 'https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/bg_main.jpg';
+---
+
+<section
+	class="relative grid min-h-[520px] place-items-center bg-cover bg-center text-white md:min-h-[70vh]"
+	style={`background-image: url(${heroImage});`}
+>
+	<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(1,54,104,0.7)_45%,rgba(240,170,198,0.6)_85%)]"></div>
+	<div class="relative z-10 mx-auto max-w-2xl px-6 text-center">
+		<p class="mb-6 font-display text-sm uppercase tracking-[0.6em]">HISTORY + FUTURE</p>
+		<h1 class="mb-6 font-sans text-3xl font-bold leading-[1.5] tracking-[0.12em] md:text-5xl">
+			人を育て、<br />
+			木と共に未来を作る会社。
+		</h1>
+		<p class="mx-auto mb-12 max-w-xl text-sm tracking-[0.12em] md:text-base">
+			奈良県産材であるヒノキの活用はもちろん、集成材の原材料調達から最終製品まで自社で管理することで建設現場に必要な木材を安定してお届けしています。
+		</p>
+		<a class="cta-link border-white text-white [--cta-fill:#ffffff] [--cta-text-hover:#000a15]" href="#about">会社について</a>
+	</div>
+	<a class="absolute bottom-10 left-1/2 -translate-x-1/2 md:bottom-16" href="#about" aria-label="下へスクロール">
+		<span class="relative flex h-16 w-px items-center justify-center overflow-hidden bg-white/50">
+			<span class="absolute inset-0 h-full w-px translate-y-[-60%] bg-white animate-scroll-down"></span>
+		</span>
+	</a>
+</section>

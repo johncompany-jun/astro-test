@@ -12,97 +12,51 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead title={`${SITE_TITLE} | Blog`} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.slug}/`}>
-									<img width={720} height={360} src={post.data.heroImage} alt="" />
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
+		<main class="space-y-12">
+			<section class="space-y-8">
+				<header class="text-center">
+					<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">BLOG</p>
+					<h1 class="font-display text-3xl font-semibold tracking-[0.12em] text-brand-text md:text-4xl">
+						最新情報
+					</h1>
+				</header>
+				<ul class="grid gap-6 md:grid-cols-2">
+					{posts.map((post, index) => (
+						<li
+							class:list={[
+								'group',
+								{
+									'md:col-span-2': index === 0,
+								},
+							]}
+						>
+							<a href={`/blog/${post.slug}/`} class="block space-y-4">
+								<img
+									src={post.data.heroImage}
+									alt={post.data.title}
+									class="w-full rounded-2xl shadow-lg-soft transition-shadow duration-300 group-hover:shadow-xl-soft"
+									loading="lazy"
+								/>
+								<h4
+									class:list={[
+										'font-display tracking-[0.12em] text-brand-text transition-colors duration-300',
+										index === 0 ? 'text-3xl md:text-[38px]' : 'text-xl md:text-2xl',
+									]}
+								>
+									{post.data.title}
+								</h4>
+								<p class="text-sm uppercase tracking-wide text-brand-text/60 transition-colors duration-300 group-hover:text-brand-text">
+									<FormattedDate date={post.data.pubDate} />
+								</p>
+							</a>
+						</li>
+					))}
 				</ul>
 			</section>
 		</main>
