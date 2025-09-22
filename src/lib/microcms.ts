@@ -2,6 +2,8 @@
  * microCMS API client utilities for fetching blog content.
  */
 
+import { createClient, type MicroCMSQueries } from 'microcms-js-sdk';
+
 export interface MicroCMSImageField {
   url: string;
   width?: number;
@@ -44,46 +46,55 @@ const apiKey = import.meta.env.MICROCMS_API_KEY;
 const apiVersion = import.meta.env.MICROCMS_API_VERSION ?? 'v1';
 const blogEndpoint = import.meta.env.MICROCMS_BLOG_ENDPOINT ?? 'blogs';
 
-const baseUrl = serviceDomain
-  ? `https://${serviceDomain}.microcms.io/api/${apiVersion}`
-  : undefined;
+let cachedClient: ReturnType<typeof createClient> | null = null;
 
 export function isMicroCMSEnabled(): boolean {
-  return Boolean(baseUrl && apiKey);
+  return Boolean(serviceDomain && apiKey);
 }
 
-function resolveConfiguration() {
-  if (!baseUrl || !apiKey) {
+function getClient() {
+  if (!serviceDomain || !apiKey) {
     throw new Error('microCMSの環境変数 (MICROCMS_SERVICE_DOMAIN, MICROCMS_API_KEY) が設定されていません。');
   }
 
-  return { baseUrl, apiKey } as const;
+  if (!cachedClient) {
+    if (apiVersion !== 'v1') {
+      console.warn(`microCMS-js-sdk は apiVersion "${apiVersion}" を直接サポートしていません。v1 を利用します。`);
+    }
+
+    cachedClient = createClient({
+      serviceDomain,
+      apiKey,
+    });
+  }
+
+  return cachedClient;
 }
 
-async function request<T>(path: string, query?: Record<string, string | number | undefined>): Promise<T> {
-  const { baseUrl: resolvedBaseUrl, apiKey: resolvedApiKey } = resolveConfiguration();
-  const url = new URL(path, `${resolvedBaseUrl}/`);
-  if (query) {
-    for (const [key, value] of Object.entries(query)) {
-      if (value !== undefined && value !== null) {
-        url.searchParams.set(key, String(value));
-      }
-    }
+async function requestList<T>(queries?: MicroCMSQueries): Promise<MicroCMSListResponse<T>> {
+  try {
+    const client = getClient();
+    return await client.getList<T>({ endpoint: blogEndpoint, queries });
+  } catch (error) {
+    throw formatMicroCMSError(error);
   }
+}
 
-  const response = await fetch(url, {
-    headers: {
-      'X-MICROCMS-API-KEY': resolvedApiKey,
-    },
-    cache: 'no-store',
-  });
-
-  if (!response.ok) {
-    const details = await response.text().catch(() => '');
-    throw new Error(`microCMSリクエストに失敗しました (${response.status}): ${details}`);
+async function requestDetail<T>(contentId: string, queries?: MicroCMSQueries): Promise<T> {
+  try {
+    const client = getClient();
+    return await client.getListDetail<T>({ endpoint: blogEndpoint, contentId, queries });
+  } catch (error) {
+    throw formatMicroCMSError(error);
   }
+}
 
-  return response.json() as Promise<T>;
+function formatMicroCMSError(error: unknown) {
+  if (error instanceof Error && 'status' in error) {
+    const status = (error as { status?: number }).status;
+    return new Error(`microCMSリクエストに失敗しました (${status ?? 'unknown'}): ${error.message}`);
+  }
+  return error instanceof Error ? error : new Error(String(error));
 }
 
 function pickImageUrl(entry: MicroCMSBlogContent): string | null {
@@ -148,29 +159,28 @@ export async function fetchBlogSummaries(params?: {
   orders?: string;
   draftKey?: string;
 }): Promise<BlogSummary[]> {
-  const query: Record<string, string | number | undefined> = {
+  const queries: MicroCMSQueries = {
     limit: params?.limit,
     orders: params?.orders ?? '-publishedAt',
     draftKey: params?.draftKey,
   };
 
-  const data = await request<MicroCMSListResponse<MicroCMSBlogContent>>(`${blogEndpoint}`, query);
+  const data = await requestList<MicroCMSBlogContent>(queries);
   return data.contents.map(toSummary);
 }
 
 export async function fetchBlogDetail(slug: string, params?: { draftKey?: string }): Promise<BlogDetail> {
-  const query: Record<string, string | number | undefined> = {
+  const queries: MicroCMSQueries = {
     draftKey: params?.draftKey,
   };
 
   let entry: MicroCMSBlogContent;
 
   try {
-    entry = await request<MicroCMSBlogContent>(`${blogEndpoint}/${slug}`, query);
+    entry = await requestDetail<MicroCMSBlogContent>(slug, queries);
   } catch (error) {
-    // When the entry slug differs from microCMS id, retry via search.
     if (slug) {
-      const list = await request<MicroCMSListResponse<MicroCMSBlogContent>>(`${blogEndpoint}`, {
+      const list = await requestList<MicroCMSBlogContent>({
         filters: `slug[equals]${slug}`,
         limit: 1,
         draftKey: params?.draftKey,
@@ -195,7 +205,7 @@ export async function fetchBlogDetail(slug: string, params?: { draftKey?: string
 }
 
 export async function fetchBlogSlugs(): Promise<string[]> {
-  const data = await request<MicroCMSListResponse<MicroCMSBlogContent>>(`${blogEndpoint}`, {
+  const data = await requestList<MicroCMSBlogContent>({
     fields: 'id,slug',
     limit: 100,
   });
