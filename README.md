@@ -1,68 +1,40 @@
-# Astro Starter Kit: Blog
+# astro-test
 
-```sh
-npm create astro@latest -- --template blog
+Astro 製のブログ／コンテンツサイト。高速・SEO 対応・MD/MDX 記事に対応し、CI/CD とホスティング（Vercel / Netlify / GitHub Pages）を前提にしています。
+
+## ✨ 特長
+
+- 🚀 高速ビルド & 100 点に近いパフォーマンス
+- 📝 Markdown / MDX 記事対応（Content Collections）
+- 🔍 OGP / canonical / sitemap / RSS 対応
+- 🧾 型安全なフロントマター（Zod）
+- 🤖 GitHub Actions で CI/CD 構築可能
+
+## 📁 プロジェクト構成
 ```
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-![blog](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
+├── public/ # 直配信アセット（favicons, 画像等）
 ├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
+│ ├── components/ # UI コンポーネント（.astro/.tsx 等）
+│ ├── content/ # 記事やコンテンツ（blog コレクション等）
+│ ├── layouts/ # ページレイアウト
+│ └── pages/ # ルーティングされるページ
 ├── astro.config.mjs
-├── README.md
 ├── package.json
-└── tsconfig.json
+├── tsconfig.json
+└── README.md
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🧑‍💻 開発コマンド
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+# 依存関係インストール
+npm install
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+# 開発サーバー localhost:4321
+npm run dev
 
-Any static assets, like images, can be placed in the `public/` directory.
+# 本番ビルド（./dist へ出力）
+npm run build
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+# ビルドのローカル確認
+npm run preview
