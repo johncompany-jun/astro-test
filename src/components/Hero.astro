@@ -1,26 +1,99 @@
 ---
-const heroImage = 'https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/bg_main.jpg';
+const slides = [
+	{
+		image: 'https://happy-m-work.com/wp-content/uploads/2025/01/software-development-6523979_1280.jpg',
+		title: '自由なワークスタイルをつくろう',
+		description: 'リモートでも現場でも、自分らしく働くためのヒントと実践例をピックアップ。',
+		cta: { label: 'READ MORE', href: '/about' },
+	},
+	{
+		image: 'https://happy-m-work.com/wp-content/uploads/2025/01/source-4280758_1280.jpg',
+		title: '最新テクノロジーをキャッチアップ',
+		description: '注目のプログラミング言語やフレームワークを素早くキャッチしてスキルアップ。',
+		cta: { label: 'READ MORE', href: '/blog' },
+	},
+	{
+		image: 'https://happy-m-work.com/wp-content/uploads/2025/01/macbook-2573421_1280.jpg',
+		title: 'キャリアをデザインする',
+		description: '市場価値を高める学び方やキャリア戦略を、現役エンジニア目線で解説。',
+		cta: { label: 'READ MORE', href: '/about' },
+	},
+];
 ---
 
-<section
-	class="relative grid min-h-[520px] place-items-center bg-cover bg-center text-white md:min-h-[70vh]"
-	style={`background-image: url(${heroImage});`}
->
-	<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(1,54,104,0.7)_45%,rgba(240,170,198,0.6)_85%)]"></div>
-	<div class="relative z-10 mx-auto max-w-2xl px-6 text-center">
-		<p class="mb-6 font-display text-sm uppercase tracking-[0.6em]">HISTORY + FUTURE</p>
-		<h1 class="mb-6 font-sans text-3xl font-bold leading-[1.5] tracking-[0.12em] md:text-5xl">
-			人を育て、<br />
-			木と共に未来を作る会社。
-		</h1>
-		<p class="mx-auto mb-12 max-w-xl text-sm tracking-[0.12em] md:text-base">
-			奈良県産材であるヒノキの活用はもちろん、集成材の原材料調達から最終製品まで自社で管理することで建設現場に必要な木材を安定してお届けしています。
-		</p>
-		<a class="cta-link border-white text-white [--cta-fill:#ffffff] [--cta-text-hover:#000a15]" href="#about">会社について</a>
+<section class="relative isolate overflow-hidden">
+	<div class="relative h-[420px] md:h-[520px]">
+		{slides.map((slide, index) => (
+			<div
+				class:list={[
+					'absolute inset-0 opacity-0 transition-opacity duration-700 ease-in-out',
+					{ 'opacity-100': index === 0 },
+				]}
+				style={`background-image: url(${slide.image});`}
+				data-slide
+			>
+				<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(1,54,104,0.65)_40%,rgba(240,170,198,0.55)_85%)]"></div>
+				<div class="relative z-10 mx-auto flex h-full max-w-[1180px] items-center px-6 text-white md:px-8">
+					<div class="max-w-2xl space-y-6">
+						<p class="font-display text-sm uppercase tracking-[0.6em] text-white/80">Happy Web Engineer</p>
+						<h1 class="text-3xl font-bold leading-relaxed tracking-[0.12em] md:text-5xl">{slide.title}</h1>
+						<p class="text-sm tracking-[0.12em] text-white/80 md:text-base">{slide.description}</p>
+						<a
+							class="inline-block rounded-full border border-white bg-white/10 px-8 py-3 text-sm font-semibold tracking-[0.4em] uppercase text-white transition hover:bg-white hover:text-brand-text"
+							href={slide.cta.href}
+						>
+							{slide.cta.label}
+						</a>
+					</div>
+				</div>
+			</div>
+		))}
 	</div>
-	<a class="absolute bottom-10 left-1/2 -translate-x-1/2 md:bottom-16" href="#about" aria-label="下へスクロール">
-		<span class="relative flex h-16 w-px items-center justify-center overflow-hidden bg-white/50">
-			<span class="absolute inset-0 h-full w-px translate-y-[-60%] bg-white animate-scroll-down"></span>
-		</span>
-	</a>
+	<div class="absolute bottom-6 right-1/2 flex translate-x-1/2 justify-center gap-2 md:bottom-8" data-slide-dots>
+		{slides.map((_, index) => (
+			<button
+				type="button"
+				class:list={[
+					'h-2.5 w-2.5 rounded-full border border-white/60 transition-colors duration-300',
+					{ 'bg-white': index === 0 },
+				]}
+				aria-label={`スライド${index + 1}`}
+			></button>
+		))}
+	</div>
 </section>
+
+<script>
+const slides = Array.from(document.querySelectorAll('[data-slide]'));
+const dots = Array.from(document.querySelectorAll('[data-slide-dots] button'));
+let index = 0;
+let timer: ReturnType<typeof setInterval> | undefined;
+
+	const activate = (next: number) => {
+		slides.forEach((item, i) => {
+			item.classList.toggle('opacity-100', i === next);
+		});
+		dots.forEach((dot, i) => {
+			dot.classList.toggle('bg-white', i === next);
+		});
+		index = next;
+	};
+
+	const play = () => {
+		timer && clearInterval(timer);
+		timer = setInterval(() => {
+			const next = (index + 1) % slides.length;
+			activate(next);
+		}, 5000);
+	};
+
+	if (slides.length > 0) {
+		play();
+		dots.forEach((dot, dotIndex) => {
+			dot.addEventListener('click', () => {
+				activate(dotIndex);
+				play();
+			});
+		});
+	}
+</script>

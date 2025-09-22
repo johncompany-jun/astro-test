@@ -1,31 +1,25 @@
 ---
-title: 'Using MDX'
-description: 'Lorem ipsum dolor sit amet'
-pubDate: 'Jul 02 2022'
-heroImage: '/blog-placeholder-5.jpg'
+title: '生成AI時代の学習ロードマップ'
+description: 'AI ツールと共存するために、エンジニアが押さえておくべきリテラシーと習慣をまとめました。'
+pubDate: '2025-04-05'
+category: 'skills'
+heroImage: 'https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=1600&q=80'
 ---
-
-This theme comes with the [@astrojs/mdx](https://docs.astro.build/en/guides/integrations-guide/mdx/) integration installed and configured in your `astro.config.mjs` config file. If you prefer not to use MDX, you can disable support by removing the integration from your config file.
-
-## Why MDX?
-
-MDX is a special flavor of Markdown that supports embedded JavaScript & JSX syntax. This unlocks the ability to [mix JavaScript and UI Components into your Markdown content](https://docs.astro.build/en/guides/markdown-content/#mdx-features) for things like interactive charts or alerts.
-
-If you have existing content authored in MDX, this integration will hopefully make migrating to Astro a breeze.
-
-## Example
-
-Here is how you import and use a UI component inside of MDX.  
-When you open this page in the browser, you should see the clickable button below.
 
 import HeaderLink from '../../components/HeaderLink.astro';
 
-<HeaderLink href="#" onclick="alert('clicked!')">
-	Embedded component in MDX
-</HeaderLink>
+生成 AI が浸透するにつれて、エンジニアの学習スタイルも変わってきました。ここでは、実務で成果を出すために押さえておきたいポイントを整理します。
 
-## More Links
+### 1. プロンプト設計の基本を身につける
 
-- [MDX Syntax Documentation](https://mdxjs.com/docs/what-is-mdx)
-- [Astro Usage Documentation](https://docs.astro.build/en/guides/markdown-content/#markdown-and-mdx-pages)
-- **Note:** [Client Directives](https://docs.astro.build/en/reference/directives-reference/#client-directives) are still required to create interactive components. Otherwise, all components in your MDX will render as static HTML (no JavaScript) by default.
+AI ツールに期待する出力を得るには、前提条件・目的・制約を明確に伝えることが大切です。社内のコーディング規約や、既存設計との整合性をプロンプトに含めるよう意識しましょう。
+
+### 2. 自動生成物の検証を仕組み化する
+
+Lint、テスト、レビューのいずれかを自動化し、生成結果の誤りを素早く検知できるようにします。CI/CD に統合しておくと運用負荷が軽減されます。
+
+### 3. 情報の蓄積と共有を習慣化する
+
+AI を使って得た知見をナレッジベースに残すことで、チーム全体の学習速度が上がります。定期的な共有会を設定し、成功事例と失敗事例をオープンに議論しましょう。
+
+<HeaderLink href="/blog">ブログに戻る</HeaderLink>

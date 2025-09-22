@@ -3,37 +3,51 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
 
-const aboutGallery = [
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const latestPosts = posts.slice(0, 3);
+
+const categorySections = [
 	{
-		src: 'https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/top_about02.jpg',
-		alt: '木材のディテール1',
+		id: 'programming',
+		title: 'プログラミング言語の最新トレンドと知識',
+		description:
+			'効率的なコーディングを可能にするヒントやチュートリアル、注目すべき言語・フレームワークの動向をピックアップ。',
+		image: 'https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=1600&q=80',
+		href: '/blog#programming',
+		label: 'PROGRAMMING',
 	},
 	{
-		src: 'https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/top_about03.jpg',
-		alt: '木材のディテール2',
+		id: 'telework',
+		title: 'テレワークをより豊かにするライフスタイル提案',
+		description:
+			'自宅の環境づくりやチームコラボレーション術など、リモートワークを快適にする工夫を紹介。',
+		image: 'https://images.unsplash.com/photo-1483478550801-ceba5fe50e8e?auto=format&fit=crop&w=1600&q=80',
+		href: '/blog#telework',
+		label: 'TELEWORK',
+	},
+	{
+		id: 'skills',
+		title: 'キャリアアップのための情報',
+		description:
+			'スキルの棚卸しから転職活動、フリーランス準備まで。市場価値を高める学びと戦略を解説。',
+		image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1600&q=80',
+		href: '/blog#skills',
+		label: 'SKILLS',
 	},
 ];
 
-const serviceLinks = [
-	{ label: '単板貼集成材事業', href: '/service/service01' },
-	{ label: 'ラッピング造作材事業', href: '/service/service02' },
-	{ label: '内装用積層材事業', href: '/service/service03' },
-	{ label: '造作用芯材事業', href: '/service/service04' },
-	{ label: '家具事業', href: '/service/#service05' },
-];
-
-const worksImages = [
-	{
-		src: 'https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/top_works01.jpg',
-		alt: '施工事例1',
-	},
-	{
-		src: 'https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/top_works02.jpg',
-		alt: '施工事例2',
-	},
-];
+const postsByCategory = Object.fromEntries(
+	categorySections.map((category) => [
+		category.id,
+		posts.filter((post) => post.data.category === category.id).slice(0, 2),
+	])
+);
 ---
 
 <!doctype html>
@@ -44,124 +58,96 @@ const worksImages = [
 	<body>
 		<Header />
 		<Hero />
-		<main class="-mt-20 md:-mt-14">
-			<section id="about" class="space-y-10 md:space-y-14">
-				<div class="grid gap-8 md:grid-cols-2 md:items-stretch">
-					<div class="overflow-hidden rounded-2xl shadow-lg-soft">
-						<img
-							src="https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/top_about01.jpg"
-							alt="工場で扱う木材"
-							class="h-full w-full object-cover"
-							loading="lazy"
-						/>
-					</div>
-					<div class="flex flex-col justify-center space-y-6">
-						<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/70">ABOUT</p>
-						<h2 class="font-display text-3xl font-semibold leading-[1.4] tracking-[0.12em] text-brand-text">
-							世界基準の木材を、<br />奈良県から。
-						</h2>
-						<p class="text-sm tracking-[0.12em] text-brand-text/80 md:text-base">
-							奈良県産材であるヒノキの活用はもちろん、集成材の原材料調達から最終製品まで自社で管理することで建設現場に必要な木材を、安定してお届けしています。
-						</p>
-						<a class="cta-link w-fit" href="/about">続きを見る</a>
-					</div>
+		<main class="-mt-12 space-y-24 md:-mt-16 md:space-y-28">
+			<section id="information" class="grid gap-12 md:grid-cols-[minmax(0,360px)_1fr] md:items-start">
+				<div class="space-y-4">
+					<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">Information</p>
+					<h2 class="font-display text-4xl font-semibold tracking-[0.12em] text-brand-text">お知らせ</h2>
+					<p class="text-sm leading-7 tracking-[0.1em] text-brand-text/80">
+						最新の記事やイベント、技術ニュースをピックアップしてお届けします。
+					</p>
+					<a class="cta-link w-fit" href="/blog">お知らせ一覧</a>
 				</div>
-				<ul class="grid gap-4 md:grid-cols-2">
-					{aboutGallery.map((item) => (
-						<li class="overflow-hidden rounded-xl shadow-lg-soft">
-							<img src={item.src} alt={item.alt} class="h-full w-full object-cover" loading="lazy" />
-						</li>
-					))}
-				</ul>
-			</section>
-
-			<section id="service" class="relative overflow-hidden rounded-3xl bg-service-gradient px-6 py-16 text-white shadow-xl-soft md:px-12 md:py-20">
-				<div class="grid gap-10 md:grid-cols-2 md:items-center">
-					<div class="overflow-hidden rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.3)]">
-						<img
-							src="https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/top_service02.jpg"
-							alt="木材加工の様子"
-							class="h-full w-full object-cover"
-							loading="lazy"
-						/>
-					</div>
-					<div class="space-y-6">
-						<p class="font-display text-sm uppercase tracking-[0.4em] text-white/70">SERVICE</p>
-						<h2 class="font-display text-3xl font-semibold leading-[1.4] tracking-[0.12em]">
-							事業内容
-						</h2>
-						<ul class="space-y-3">
-							{serviceLinks.map((item, index) => (
-								<li>
-									<a
-										href={item.href}
-										class="group flex items-center gap-4 border-b border-white/20 py-3 text-sm tracking-[0.12em] transition-all duration-300 hover:gap-6"
-									>
-										<span class="font-display text-xs uppercase tracking-[0.4em]">0{index + 1}</span>
-										<span>{item.label}</span>
-									</a>
-								</li>
-							))}
-						</ul>
-						<p class="text-sm tracking-[0.12em] text-white/80 md:text-base">
-							垣本ハウスは、建設現場で求められる内装用積層材を製造する総合造作材メーカーです。
-						</p>
-						<a class="cta-link w-fit border-white text-white [--cta-fill:#ffffff] [--cta-text-hover:#000a15]" href="/service">続きを見る</a>
-					</div>
-				</div>
-			</section>
-
-			<section id="works" class="space-y-10 py-10 text-center md:py-16">
 				<div class="space-y-6">
-					<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/70">WORKS</p>
-					<h2 class="font-display text-3xl font-semibold leading-[1.4] tracking-[0.12em] text-brand-text">
-						商品採用実績
-					</h2>
-					<p class="mx-auto max-w-2xl text-sm tracking-[0.12em] text-brand-text/80 md:text-base">
-						垣本ハウスの商品は、学校や商業施設などの設備から個人宅まで、様々な場所で選ばれています。
-					</p>
-					<a class="cta-link inline-block" href="/works">続きを見る</a>
-				</div>
-				<div class="grid gap-6 md:grid-cols-2">
-					{worksImages.map((item) => (
-						<figure class="overflow-hidden rounded-2xl shadow-lg-soft">
-							<img src={item.src} alt={item.alt} class="h-full w-full object-cover" loading="lazy" />
-						</figure>
-					))}
-				</div>
-			</section>
-
-			<section
-				id="recruit"
-				class="relative overflow-hidden rounded-3xl text-white shadow-xl-soft"
-			>
-				<div
-					class="absolute inset-0 bg-cover bg-center"
-					style={`background-image: url(https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/top_recruit01.jpg);`}
-				></div>
-				<div class="absolute inset-0 bg-recruit-gradient"></div>
-				<div class="relative z-10 max-w-md space-y-6 px-6 py-16 md:px-12 md:py-20">
-					<p class="font-display text-sm uppercase tracking-[0.4em] text-white/70">RECRUIT</p>
-					<h2 class="font-display text-3xl font-semibold leading-[1.4] tracking-[0.12em]">
-						採用情報
-					</h2>
-					<p class="text-sm tracking-[0.16em] text-white/90 md:text-base">
-						成長の喜びは、仕事の中にある。会社と社員、共に成長する事で次の時代も選ばれる会社に。
-					</p>
-					<a class="cta-link w-fit border-white text-white [--cta-fill:#ffffff] [--cta-text-hover:#000a15]" href="/recruit">続きを見る</a>
+					<ul class="space-y-6">
+						{latestPosts.map((post) => (
+							<li class="border-b border-brand-text/10 pb-6 last:border-none last:pb-0">
+								<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
+									<FormattedDate date={post.data.pubDate} />
+								</p>
+								<a
+									href={`/blog/${post.slug}/`}
+									class="mt-2 block text-lg font-semibold tracking-[0.06em] text-brand-text transition hover:text-brand-text/70"
+								>
+									{post.data.title}
+								</a>
+								<p class="mt-2 text-sm leading-relaxed tracking-[0.08em] text-brand-text/70">
+									{post.data.description}
+								</p>
+							</li>
+						))}
+					</ul>
 				</div>
 			</section>
 
-			<section id="contact" class="rounded-3xl bg-[#f5f5f5] px-6 py-16 text-center shadow-[inset_0_0_0_1px_rgba(0,10,21,0.06)] md:px-12 md:py-20">
-				<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/70">CONTACT</p>
-				<h2 class="mb-6 font-display text-3xl font-semibold leading-[1.4] tracking-[0.12em] text-brand-text">
-					お問合せ
-				</h2>
-				<p class="mx-auto mb-10 max-w-2xl text-sm tracking-[0.12em] text-brand-text/80 md:text-base">
-					ご質問等ございましたらお気軽にお問合せ下さい。お電話（<a class="text-brand-text" href="tel:0744-27-3731">0744-27-3731</a>）にてご連絡頂くか、下記のお問合せページのフォームにご記入の上、送信下さい。
-				</p>
-				<a class="cta-link inline-block" href="/contact">お問合せフォームはこちらから</a>
-			</section>
+			{categorySections.map((section, index) => {
+				const categoryPosts = postsByCategory[section.id] ?? [];
+				const isEven = index % 2 === 1;
+				return (
+					<section
+						id={section.id}
+						class:list={[
+							'relative overflow-hidden rounded-3xl bg-brand-background/70 p-8 shadow-xl-soft md:p-12',
+							{ 'md:bg-gradient-to-r md:from-[#f5f5f5] md:to-white': index === 0 },
+						]}
+					>
+						<div
+							class:list={[
+								'grid gap-10 md:gap-14',
+								{ 'md:grid-cols-[1fr_minmax(0,360px)]': !isEven },
+								{ 'md:grid-cols-[minmax(0,360px)_1fr]': isEven },
+							]}
+						>
+							<div class:list={['relative overflow-hidden rounded-2xl shadow-lg-soft', { 'md:order-last': !isEven }]}
+							>
+								<img
+									src={section.image}
+									alt={section.title}
+									class="h-full w-full object-cover"
+									loading="lazy"
+								/>
+							</div>
+							<div class="space-y-6">
+								<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">{section.label}</p>
+								<h3 class="font-display text-3xl font-semibold leading-[1.4] tracking-[0.12em] text-brand-text">
+									{section.title}
+								</h3>
+								<p class="text-sm leading-7 tracking-[0.1em] text-brand-text/80">
+									{section.description}
+								</p>
+								{categoryPosts.length > 0 && (
+									<ul class="space-y-3">
+										{categoryPosts.map((post) => (
+											<li class="flex items-start gap-4">
+												<span class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
+													<FormattedDate date={post.data.pubDate} />
+												</span>
+												<a
+													href={`/blog/${post.slug}/`}
+													class="text-sm font-medium tracking-[0.06em] text-brand-text transition hover:text-brand-text/70"
+												>
+													{post.data.title}
+												</a>
+											</li>
+										))}
+									</ul>
+								)}
+								<a class="cta-link w-fit" href={section.href}>もっと見る</a>
+							</div>
+						</div>
+					</section>
+				);
+			})}
 		</main>
 		<Footer />
 	</body>

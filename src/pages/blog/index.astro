@@ -7,7 +7,32 @@ import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
 
 const posts = (await getCollection('blog')).sort(
-	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const categories = [
+	{
+		id: 'programming',
+		title: 'PROGRAMMING',
+		description: 'プログラミング言語やフレームワークの最新トレンド、実務で使えるヒントを解説。',
+	},
+	{
+		id: 'telework',
+		title: 'TELEWORK',
+		description: '働く場所を自由にするための環境構築術や、リモートチームのコラボレーション事例。',
+	},
+	{
+		id: 'skills',
+		title: 'SKILLS',
+		description: 'キャリアアップや学習計画、生成 AI 時代に求められるリテラシーをまとめています。',
+	},
+];
+
+const postsByCategory = Object.fromEntries(
+	categories.map((category) => [
+		category.id,
+		posts.filter((post) => post.data.category === category.id),
+	])
 );
 ---
 
@@ -18,47 +43,68 @@ const posts = (await getCollection('blog')).sort(
 	</head>
 	<body>
 		<Header />
-		<main class="space-y-12">
-			<section class="space-y-8">
-				<header class="text-center">
-					<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">BLOG</p>
-					<h1 class="font-display text-3xl font-semibold tracking-[0.12em] text-brand-text md:text-4xl">
-						最新情報
-					</h1>
-				</header>
-				<ul class="grid gap-6 md:grid-cols-2">
-					{posts.map((post, index) => (
-						<li
-							class:list={[
-								'group',
-								{
-									'md:col-span-2': index === 0,
-								},
-							]}
-						>
-							<a href={`/blog/${post.slug}/`} class="block space-y-4">
-								<img
-									src={post.data.heroImage}
-									alt={post.data.title}
-									class="w-full rounded-2xl shadow-lg-soft transition-shadow duration-300 group-hover:shadow-xl-soft"
-									loading="lazy"
-								/>
-								<h4
-									class:list={[
-										'font-display tracking-[0.12em] text-brand-text transition-colors duration-300',
-										index === 0 ? 'text-3xl md:text-[38px]' : 'text-xl md:text-2xl',
-									]}
-								>
-									{post.data.title}
-								</h4>
-								<p class="text-sm uppercase tracking-wide text-brand-text/60 transition-colors duration-300 group-hover:text-brand-text">
-									<FormattedDate date={post.data.pubDate} />
-								</p>
+		<main class="space-y-16">
+			<section class="space-y-4 text-center">
+				<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">Blog</p>
+				<h1 class="font-display text-4xl font-semibold tracking-[0.12em] text-brand-text md:text-5xl">
+					最新記事
+				</h1>
+				<p class="mx-auto max-w-2xl text-sm leading-7 tracking-[0.1em] text-brand-text/70">
+					テレワーク、プログラミング、キャリアアップに関する記事をカテゴリー別にまとめています。
+				</p>
+			</section>
+
+			<section class="space-y-6" aria-label="最新3件">
+				<h2 class="font-display text-xl uppercase tracking-[0.3em] text-brand-text/70">Latest</h2>
+				<ul class="grid gap-6 md:grid-cols-3">
+					{posts.slice(0, 3).map((post) => (
+						<li class="group rounded-2xl border border-brand-text/10 p-5 shadow-lg-soft transition hover:-translate-y-1 hover:shadow-xl-soft">
+							<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
+								<FormattedDate date={post.data.pubDate} />
+							</p>
+							<a href={`/blog/${post.slug}/`} class="mt-3 block text-lg font-semibold tracking-[0.08em] text-brand-text transition group-hover:text-brand-text/70">
+								{post.data.title}
 							</a>
+							<p class="mt-3 text-sm leading-7 tracking-[0.08em] text-brand-text/70">{post.data.description}</p>
 						</li>
 					))}
 				</ul>
 			</section>
+
+			{categories.map((category) => {
+				const categoryPosts = postsByCategory[category.id] ?? [];
+				return (
+					<section id={category.id} class="space-y-6">
+						<div class="space-y-2">
+							<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">{category.title}</p>
+							<h2 class="text-2xl font-semibold tracking-[0.12em] text-brand-text">
+								{category.description}
+							</h2>
+						</div>
+						<ul class="space-y-4">
+							{categoryPosts.map((post) => (
+								<li class="rounded-2xl border border-brand-text/10 p-5 shadow-lg-soft transition hover:-translate-y-0.5 hover:shadow-xl-soft">
+									<div class="flex flex-wrap items-center justify-between gap-3">
+										<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
+											<FormattedDate date={post.data.pubDate} />
+										</p>
+										<span class="text-xs uppercase tracking-[0.3em] text-brand-text/50">{category.title}</span>
+									</div>
+									<a href={`/blog/${post.slug}/`} class="mt-2 block text-lg font-semibold tracking-[0.08em] text-brand-text transition hover:text-brand-text/70">
+										{post.data.title}
+									</a>
+									<p class="mt-2 text-sm leading-7 tracking-[0.08em] text-brand-text/70">{post.data.description}</p>
+								</li>
+							))}
+							{categoryPosts.length === 0 && (
+								<li class="rounded-2xl border border-dashed border-brand-text/20 p-6 text-sm tracking-[0.08em] text-brand-text/50">
+									準備中の記事カテゴリーです。
+								</li>
+							)}
+						</ul>
+					</section>
+				);
+			})}
 		</main>
 		<Footer />
 	</body>

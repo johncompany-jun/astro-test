@@ -4,8 +4,8 @@ import { SITE_TITLE } from '../consts';
 
 <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-[0_10px_30px_rgba(0,10,21,0.08)]">
 	<div class="mx-auto flex max-w-[1180px] items-center justify-between px-5 py-4 md:px-6">
-		<a class="block w-44 md:w-60" href="/">
-			<img src="https://kakimotohouse.co.jp/wp-content/themes/kakimotohouse_2019/img/logo.png" alt={SITE_TITLE} loading="lazy" />
+		<a class="block" href="/">
+			<span class="font-display text-lg uppercase tracking-[0.4em] text-brand-text md:text-xl">{SITE_TITLE}</span>
 		</a>
 		<button
 			class="flex h-12 w-12 items-center justify-center rounded-full border border-brand-text/30 text-brand-text transition-colors duration-300 md:hidden"
@@ -28,12 +28,13 @@ import { SITE_TITLE } from '../consts';
 		>
 			<ul class="flex flex-col gap-6 md:flex-row md:items-center md:gap-7">
 				{[
-					{ label: 'TOP', href: '/' },
+					{ label: 'HOME', href: '/' },
+					{ label: 'INFORMATION', href: '/#information' },
+					{ label: 'PROGRAMMING', href: '/#programming' },
+					{ label: 'TELEWORK', href: '/#telework' },
+					{ label: 'SKILLS', href: '/#skills' },
+					{ label: 'BLOG', href: '/blog' },
 					{ label: 'ABOUT', href: '/about' },
-					{ label: 'SERVICE', href: '/service' },
-					{ label: 'WORKS', href: '/works' },
-					{ label: 'RECRUIT', href: '/recruit' },
-					{ label: 'CONTACT', href: '/contact' },
 				].map((item) => (
 					<li>
 						<a
