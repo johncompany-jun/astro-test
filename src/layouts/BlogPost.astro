@@ -1,13 +1,19 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+interface Props {
+	title: string;
+	description: string;
+	pubDate: Date;
+	updatedDate?: Date | null;
+	heroImage?: string | null;
+	contentHtml?: string | null;
+}
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, contentHtml } = Astro.props;
 ---
 
 <html lang="ja">
@@ -47,7 +53,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 						<hr class="mx-auto w-24 border-brand-text/20" />
 					</header>
 					<div class="space-y-6 text-base leading-8 tracking-wide text-brand-text/80 md:text-lg">
-						<slot />
+						{contentHtml ? <Fragment set:html={contentHtml} /> : <slot />}
 					</div>
 				</div>
 			</article>

@@ -3,11 +3,11 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
-import { getCollection } from 'astro:content';
+import { getAllPostSummaries, getPostSummariesByCategory } from '../../lib/blog-data';
 import FormattedDate from '../../components/FormattedDate.astro';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+const posts = (await getAllPostSummaries()).sort(
+	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf()
 );
 
 const categories = [
@@ -28,12 +28,7 @@ const categories = [
 	},
 ];
 
-const postsByCategory = Object.fromEntries(
-	categories.map((category) => [
-		category.id,
-		posts.filter((post) => post.data.category === category.id),
-	])
-);
+const postsByCategory = await getPostSummariesByCategory();
 ---
 
 <!doctype html>
@@ -60,12 +55,12 @@ const postsByCategory = Object.fromEntries(
 					{posts.slice(0, 3).map((post) => (
 						<li class="group rounded-2xl border border-brand-text/10 p-5 shadow-lg-soft transition hover:-translate-y-1 hover:shadow-xl-soft">
 							<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
-								<FormattedDate date={post.data.pubDate} />
+								<FormattedDate date={post.pubDate} />
 							</p>
 							<a href={`/blog/${post.slug}/`} class="mt-3 block text-lg font-semibold tracking-[0.08em] text-brand-text transition group-hover:text-brand-text/70">
-								{post.data.title}
+								{post.title}
 							</a>
-							<p class="mt-3 text-sm leading-7 tracking-[0.08em] text-brand-text/70">{post.data.description}</p>
+							<p class="mt-3 text-sm leading-7 tracking-[0.08em] text-brand-text/70">{post.description}</p>
 						</li>
 					))}
 				</ul>
@@ -86,14 +81,14 @@ const postsByCategory = Object.fromEntries(
 								<li class="rounded-2xl border border-brand-text/10 p-5 shadow-lg-soft transition hover:-translate-y-0.5 hover:shadow-xl-soft">
 									<div class="flex flex-wrap items-center justify-between gap-3">
 										<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
-											<FormattedDate date={post.data.pubDate} />
+											<FormattedDate date={post.pubDate} />
 										</p>
 										<span class="text-xs uppercase tracking-[0.3em] text-brand-text/50">{category.title}</span>
 									</div>
 									<a href={`/blog/${post.slug}/`} class="mt-2 block text-lg font-semibold tracking-[0.08em] text-brand-text transition hover:text-brand-text/70">
-										{post.data.title}
+										{post.title}
 									</a>
-									<p class="mt-2 text-sm leading-7 tracking-[0.08em] text-brand-text/70">{post.data.description}</p>
+									<p class="mt-2 text-sm leading-7 tracking-[0.08em] text-brand-text/70">{post.description}</p>
 								</li>
 							))}
 							{categoryPosts.length === 0 && (

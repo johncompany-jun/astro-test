@@ -5,10 +5,10 @@ import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { getCollection } from 'astro:content';
+import { getAllPostSummaries } from '../lib/blog-data';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+const posts = (await getAllPostSummaries()).sort(
+	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf()
 );
 const latestPosts = posts.slice(0, 3);
 
@@ -45,7 +45,7 @@ const categorySections = [
 const postsByCategory = Object.fromEntries(
 	categorySections.map((category) => [
 		category.id,
-		posts.filter((post) => post.data.category === category.id).slice(0, 2),
+		posts.filter((post) => post.category === category.id).slice(0, 2),
 	])
 );
 ---
@@ -73,16 +73,16 @@ const postsByCategory = Object.fromEntries(
 						{latestPosts.map((post) => (
 							<li class="border-b border-brand-text/10 pb-6 last:border-none last:pb-0">
 								<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
-									<FormattedDate date={post.data.pubDate} />
+									<FormattedDate date={post.pubDate} />
 								</p>
 								<a
 									href={`/blog/${post.slug}/`}
 									class="mt-2 block text-lg font-semibold tracking-[0.06em] text-brand-text transition hover:text-brand-text/70"
 								>
-									{post.data.title}
+									{post.title}
 								</a>
 								<p class="mt-2 text-sm leading-relaxed tracking-[0.08em] text-brand-text/70">
-									{post.data.description}
+									{post.description}
 								</p>
 							</li>
 						))}
@@ -130,13 +130,13 @@ const postsByCategory = Object.fromEntries(
 										{categoryPosts.map((post) => (
 											<li class="flex items-start gap-4">
 												<span class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
-													<FormattedDate date={post.data.pubDate} />
+													<FormattedDate date={post.pubDate} />
 												</span>
 												<a
 													href={`/blog/${post.slug}/`}
 													class="text-sm font-medium tracking-[0.06em] text-brand-text transition hover:text-brand-text/70"
 												>
-													{post.data.title}
+													{post.title}
 												</a>
 											</li>
 										))}

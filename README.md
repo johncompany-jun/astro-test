@@ -38,3 +38,28 @@ npm run build
 
 # ビルドのローカル確認
 npm run preview
+
+## 🔌 microCMS 連携設定
+
+1. microCMS でブログ用 API を用意し、サービスドメインと API キーを取得します。
+2. プロジェクトルートに `.env`（本番ではデプロイ先の環境変数）を作成し、以下を設定します。
+
+   ```bash
+   MICROCMS_SERVICE_DOMAIN=your-service-id
+   MICROCMS_API_KEY=your-api-key
+   # 任意: API エンドポイント名を変更したい場合
+   # MICROCMS_BLOG_ENDPOINT=blogs
+   # 任意: API バージョンを変更したい場合
+   # MICROCMS_API_VERSION=v1
+   ```
+
+3. microCMS 側で以下のフィールドを用意しておくと既存 UI と親和性が高まります。
+   - `title` (テキスト)
+   - `description` (テキスト)
+   - `category` (プルダウン or コンテンツ参照／ID が `programming` / `telework` / `skills` である前提)
+   - `slug` (テキスト、任意。未設定の場合は microCMS の `id` を使用)
+   - `publishedAt` (公開日時)
+   - `body` または `content` (リッチエディタ or Markdown フィールド)
+   - `heroImage` / `eyecatch` (画像フィールド、任意)
+
+microCMS の環境変数が未設定、または取得に失敗した場合は従来どおり `src/content/blog` のローカル記事にフォールバックします。
