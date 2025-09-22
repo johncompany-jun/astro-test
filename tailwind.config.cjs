@@ -36,17 +36,22 @@ module.exports = {
 				'service-gradient': 'linear-gradient(140deg, #01326d 0%, #001b3c 60%, rgba(0, 27, 60, 0.9) 100%)',
 				'recruit-gradient': 'linear-gradient(120deg, rgba(0, 27, 60, 0.85), rgba(0, 10, 21, 0.9))',
 			},
-			keyframes: {
-				'scroll-down': {
-					'0%': { opacity: '0', transform: 'translateY(-60%)' },
-					'50%': { opacity: '1', transform: 'translateY(0%)' },
-					'100%': { opacity: '0', transform: 'translateY(60%)' },
+				keyframes: {
+					'scroll-down': {
+						'0%': { opacity: '0', transform: 'translateY(-60%)' },
+						'50%': { opacity: '1', transform: 'translateY(0%)' },
+						'100%': { opacity: '0', transform: 'translateY(60%)' },
+					},
+					'hero-zoom': {
+						'0%': { transform: 'scale(1)' },
+						'100%': { transform: 'scale(1.1)' },
+					},
+				},
+				animation: {
+					'scroll-down': 'scroll-down 2s infinite',
+					'hero-zoom': 'hero-zoom 7s ease-in-out forwards',
 				},
 			},
-			animation: {
-				'scroll-down': 'scroll-down 2s infinite',
-			},
-		},
 	},
 	plugins: [],
 };

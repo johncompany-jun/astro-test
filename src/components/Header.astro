@@ -1,5 +1,15 @@
 ---
 import { SITE_TITLE } from '../consts';
+
+const navItems = [
+	{ label: 'HOME', href: '/' },
+	{ label: 'INFORMATION', href: '/#information' },
+	{ label: 'PROGRAMMING', href: '/#programming' },
+	{ label: 'TELEWORK', href: '/#telework' },
+	{ label: 'SKILLS', href: '/blog#skills' },
+	{ label: 'BLOG', href: '/blog' },
+	{ label: 'ABOUT', href: '/about' },
+];
 ---
 
 <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-[0_10px_30px_rgba(0,10,21,0.08)]">
@@ -26,20 +36,12 @@ import { SITE_TITLE } from '../consts';
 			data-primary-nav
 			class="fixed inset-y-0 right-0 flex w-[80vw] max-w-xs translate-x-full flex-col justify-start gap-10 bg-white/95 px-10 py-32 shadow-[-20px_0_40px_rgba(0,10,21,0.12)] transition-transform duration-300 md:static md:w-auto md:translate-x-0 md:flex-row md:items-center md:bg-transparent md:p-0 md:shadow-none"
 		>
-			<ul class="flex flex-col gap-6 md:flex-row md:items-center md:gap-7">
-				{[
-					{ label: 'HOME', href: '/' },
-					{ label: 'INFORMATION', href: '/#information' },
-					{ label: 'PROGRAMMING', href: '/#programming' },
-					{ label: 'TELEWORK', href: '/#telework' },
-					{ label: 'SKILLS', href: '/#skills' },
-					{ label: 'BLOG', href: '/blog' },
-					{ label: 'ABOUT', href: '/about' },
-				].map((item) => (
+			<ul class="flex flex-col gap-6 md:flex-row md:flex-wrap md:items-center md:gap-6">
+				{navItems.map((item) => (
 					<li>
 						<a
 							href={item.href}
-							class="relative block font-display text-sm uppercase tracking-[0.4em] text-brand-text transition-colors duration-300 after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-brand-text after:transition-transform after:duration-300 after:content-[''] hover:after:scale-x-100 md:text-xs"
+							class="relative block font-display text-sm uppercase tracking-[0.28em] text-brand-text transition-colors duration-300 after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-brand-text after:transition-transform after:duration-300 after:content-[''] hover:after:scale-x-100 md:text-xs"
 						>
 							{item.label}
 						</a>

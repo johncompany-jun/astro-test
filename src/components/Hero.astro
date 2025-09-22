@@ -4,19 +4,19 @@ const slides = [
 		image: 'https://happy-m-work.com/wp-content/uploads/2025/01/software-development-6523979_1280.jpg',
 		title: '自由なワークスタイルをつくろう',
 		description: 'リモートでも現場でも、自分らしく働くためのヒントと実践例をピックアップ。',
-		cta: { label: 'READ MORE', href: '/about' },
+		cta: { label: 'READ MORE', href: '/blog#telework' },
 	},
 	{
 		image: 'https://happy-m-work.com/wp-content/uploads/2025/01/source-4280758_1280.jpg',
 		title: '最新テクノロジーをキャッチアップ',
 		description: '注目のプログラミング言語やフレームワークを素早くキャッチしてスキルアップ。',
-		cta: { label: 'READ MORE', href: '/blog' },
+		cta: { label: 'READ MORE', href: '/blog#programming' },
 	},
 	{
 		image: 'https://happy-m-work.com/wp-content/uploads/2025/01/macbook-2573421_1280.jpg',
 		title: 'キャリアをデザインする',
 		description: '市場価値を高める学び方やキャリア戦略を、現役エンジニア目線で解説。',
-		cta: { label: 'READ MORE', href: '/about' },
+		cta: { label: 'READ MORE', href: '/blog#skills' },
 	},
 ];
 ---
@@ -26,13 +26,21 @@ const slides = [
 		{slides.map((slide, index) => (
 			<div
 				class:list={[
-					'absolute inset-0 opacity-0 transition-opacity duration-700 ease-in-out',
+					'absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-700 ease-in-out',
 					{ 'opacity-100': index === 0 },
 				]}
-				style={`background-image: url(${slide.image});`}
 				data-slide
 			>
-				<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(1,54,104,0.65)_40%,rgba(240,170,198,0.55)_85%)]"></div>
+					<picture>
+						<img
+							src={slide.image}
+							alt={slide.title}
+							class="absolute inset-0 h-full w-full object-cover"
+							loading="lazy"
+							data-slide-image
+						/>
+					</picture>
+					<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(1,54,104,0.65)_40%,rgba(240,170,198,0.55)_85%)]"></div>
 				<div class="relative z-10 mx-auto flex h-full max-w-[1180px] items-center px-6 text-white md:px-8">
 					<div class="max-w-2xl space-y-6">
 						<p class="font-display text-sm uppercase tracking-[0.6em] text-white/80">Happy Web Engineer</p>
@@ -66,6 +74,7 @@ const slides = [
 <script>
 const slides = Array.from(document.querySelectorAll('[data-slide]'));
 const dots = Array.from(document.querySelectorAll('[data-slide-dots] button'));
+const slideImages = slides.map((slide) => slide.querySelector('[data-slide-image]'));
 let index = 0;
 let timer: ReturnType<typeof setInterval> | undefined;
 
@@ -75,6 +84,14 @@ let timer: ReturnType<typeof setInterval> | undefined;
 		});
 		dots.forEach((dot, i) => {
 			dot.classList.toggle('bg-white', i === next);
+		});
+		slideImages.forEach((image, i) => {
+			if (!(image instanceof HTMLElement)) return;
+			image.classList.remove('animate-hero-zoom');
+			if (i === next) {
+				void image.offsetWidth;
+				image.classList.add('animate-hero-zoom');
+			}
 		});
 		index = next;
 	};
@@ -88,6 +105,7 @@ let timer: ReturnType<typeof setInterval> | undefined;
 	};
 
 	if (slides.length > 0) {
+		activate(0);
 		play();
 		dots.forEach((dot, dotIndex) => {
 			dot.addEventListener('click', () => {
