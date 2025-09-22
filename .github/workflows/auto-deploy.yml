@@ -52,6 +52,5 @@ jobs:
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}    
           state-name: .ftp-deploy-sync-state.json
           dangerous-clean-slate: false
-          # XserverでFTPS必須なら下記を有効化（接続失敗時に試してください）
-          # protocol: ftps
-          # security: loose
+          protocol: ftps
+          security: loose
