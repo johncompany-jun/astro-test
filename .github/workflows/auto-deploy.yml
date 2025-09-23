@@ -2,7 +2,7 @@ name: Build & FTP Deploy
 
 on:
   push:
-    branches: [ main ]             # ← mainにpushで自動デプロイ（不要なら消してOK）
+    branches: [ main ]            
   workflow_dispatch:
     inputs:
       reason:
@@ -10,7 +10,7 @@ on:
         required: false
         default: "manual"
   repository_dispatch:
-    types: [ microcms-update ]     # ← microCMS側のevent_typeと一致させる
+    types: [ microcms-update ]    
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -34,7 +34,6 @@ jobs:
         run: npm ci
 
       - name: Build Astro site
-        # ビルド時にmicroCMSの環境変数が必要な場合だけSecretsを渡す
         env:
           MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}

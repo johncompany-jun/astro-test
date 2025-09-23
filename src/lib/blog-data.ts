@@ -1,4 +1,4 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import {
   fetchBlogDetail as fetchMicroCMSBlogDetail,
   fetchBlogSlugs as fetchMicroCMSBlogSlugs,
@@ -19,17 +19,37 @@ export interface BlogPostSummary {
   heroImage: string | null;
 }
 
+type BlogEntryData = {
+  title: string;
+  description: string;
+  category: 'programming' | 'telework' | 'skills';
+  pubDate: Date;
+  updatedDate?: Date;
+  heroImage?: string;
+};
+
+type LocalBlogEntry = {
+  slug: string;
+  data: BlogEntryData;
+  render: () => Promise<{ Content: unknown }>;
+};
+
+// Ensure we always have a usable entry type even when the collection folder is empty.
+async function getLocalBlogEntries(): Promise<LocalBlogEntry[]> {
+  return (await getCollection('blog')) as LocalBlogEntry[];
+}
+
 export interface LocalBlogDetail {
   source: 'local';
   slug: string;
-  entry: CollectionEntry<'blog'>;
+  entry: LocalBlogEntry;
 }
 
 export type RemoteBlogDetail = MicroCMSBlogDetail & { source: 'microcms' };
 
 export type BlogPostDetail = RemoteBlogDetail | LocalBlogDetail;
 
-function toLocalSummary(entry: CollectionEntry<'blog'>): BlogPostSummary {
+function toLocalSummary(entry: LocalBlogEntry): BlogPostSummary {
   return {
     source: 'local',
     slug: entry.slug,
@@ -65,7 +85,7 @@ export async function getAllPostSummaries(): Promise<BlogPostSummary[]> {
     }
   }
 
-  const entries = await getCollection('blog');
+  const entries = await getLocalBlogEntries();
   return entries.map(toLocalSummary);
 }
 
@@ -104,7 +124,7 @@ export async function getBlogDetail(slug: string): Promise<BlogPostDetail> {
     }
   }
 
-  const entries = await getCollection('blog');
+  const entries = await getLocalBlogEntries();
   const entry = entries.find((post) => post.slug === slug);
 
   if (!entry) {
@@ -123,6 +143,6 @@ export async function getBlogSlugs(): Promise<string[]> {
     }
   }
 
-  const entries = await getCollection('blog');
+  const entries = await getLocalBlogEntries();
   return entries.map((entry) => entry.slug);
 }
