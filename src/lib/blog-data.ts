@@ -138,3 +138,20 @@ export async function getBlogDetail(slug: string): Promise<BlogPostDetail> {
     entry: hit,
   };
 }
+
+export async function getPostSummariesByCategory(): Promise<Record<string, BlogPostSummary[]>> {
+  const posts = await getAllPostSummaries();
+
+  return posts.reduce<Record<string, BlogPostSummary[]>>((acc, post) => {
+    if (!post.category) {
+      return acc;
+    }
+
+    if (!acc[post.category]) {
+      acc[post.category] = [];
+    }
+
+    acc[post.category].push(post);
+    return acc;
+  }, {});
+}
