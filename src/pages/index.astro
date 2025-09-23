@@ -6,8 +6,10 @@ import Hero from '../components/Hero.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getAllPostSummaries } from '../lib/blog-data';
+import type { BlogPostSummary } from '../lib/blog-data';
 
-const posts = (await getAllPostSummaries()).sort(
+
+const posts: BlogPostSummary[] = (await getAllPostSummaries()).sort(
 	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf()
 );
 const latestPosts = posts.slice(0, 3);
@@ -42,7 +44,7 @@ const categorySections = [
 	},
 ];
 
-const postsByCategory = Object.fromEntries(
+const postsByCategory: Record<string, BlogPostSummary[]> = Object.fromEntries(
 	categorySections.map((category) => [
 		category.id,
 		posts.filter((post) => post.category === category.id).slice(0, 2),
