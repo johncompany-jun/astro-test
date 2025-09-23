@@ -1,148 +1,140 @@
-import { getCollection } from 'astro:content';
+// src/lib/blog-data.ts
+import type { BlogDetail as MicroBlogDetail, BlogSummary as MicroBlogSummary } from './microcms';
 import {
-  fetchBlogDetail as fetchMicroCMSBlogDetail,
-  fetchBlogSlugs as fetchMicroCMSBlogSlugs,
-  fetchBlogSummaries as fetchMicroCMSBlogSummaries,
+  fetchBlogSummaries as fetchMicroSummaries,
+  fetchBlogDetail as fetchMicroDetail,
+  fetchBlogSlugs as fetchMicroSlugs,
   isMicroCMSEnabled,
-  type BlogDetail as MicroCMSBlogDetail,
-  type BlogSummary as MicroCMSBlogSummary,
 } from './microcms';
 
-export interface BlogPostSummary {
-  source: 'microcms' | 'local';
-  slug: string;
-  title: string;
-  description: string;
-  category: string | null;
-  pubDate: Date;
-  updatedDate: Date | null;
-  heroImage: string | null;
-}
-
-type BlogEntryData = {
-  title: string;
-  description: string;
-  category: 'programming' | 'telework' | 'skills';
-  pubDate: Date;
-  updatedDate?: Date;
-  heroImage?: string;
-};
-
-type LocalBlogEntry = {
-  slug: string;
-  data: BlogEntryData;
-  render: () => Promise<{ Content: unknown }>;
-};
-
-// Ensure we always have a usable entry type even when the collection folder is empty.
-async function getLocalBlogEntries(): Promise<LocalBlogEntry[]> {
-  return (await getCollection('blog')) as LocalBlogEntry[];
-}
-
-export interface LocalBlogDetail {
-  source: 'local';
-  slug: string;
-  entry: LocalBlogEntry;
-}
-
-export type RemoteBlogDetail = MicroCMSBlogDetail & { source: 'microcms' };
-
-export type BlogPostDetail = RemoteBlogDetail | LocalBlogDetail;
-
-function toLocalSummary(entry: LocalBlogEntry): BlogPostSummary {
-  return {
-    source: 'local',
-    slug: entry.slug,
-    title: entry.data.title,
-    description: entry.data.description,
-    category: entry.data.category ?? null,
-    pubDate: entry.data.pubDate,
-    updatedDate: entry.data.updatedDate ?? null,
-    heroImage: entry.data.heroImage ?? null,
+// （任意）ローカルMD記事を使う場合の型
+export interface LocalEntry {
+  data: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    updatedDate?: Date | null;
+    heroImage?: string | null;
+    category?: string | null;
+    slug: string;
   };
+  render: () => Promise<{ Content: any }>;
 }
 
-function toRemoteSummary(entry: MicroCMSBlogSummary): BlogPostSummary {
-  return {
-    source: 'microcms',
-    slug: entry.slug,
-    title: entry.title,
-    description: entry.description,
-    category: entry.category,
-    pubDate: entry.pubDate,
-    updatedDate: entry.updatedDate,
-    heroImage: entry.heroImage,
-  };
+export type BlogPostSummary =
+  | (MicroBlogSummary & { source: 'microcms' })
+  | ({
+      source: 'local';
+      slug: string;
+      title: string;
+      description: string;
+      category: string | null;
+      pubDate: Date;
+      updatedDate: Date | null;
+      heroImage: string | null;
+      entry: LocalEntry;
+    });
+
+export type BlogPostDetail =
+  | (MicroBlogDetail & { source: 'microcms' })
+  | ({
+      source: 'local';
+      slug: string;
+      title: string;
+      description: string;
+      category: string | null;
+      pubDate: Date;
+      updatedDate: Date | null;
+      heroImage: string | null;
+      entry: LocalEntry;
+    });
+
+// （任意）ローカルMDの読み込み（使わないなら空配列でOK）
+async function getLocalEntries(): Promise<LocalEntry[]> {
+  // 例: Astro content collections を使うならここで読み込む
+  // const posts = await getCollection('blog');
+  // return posts as unknown as LocalEntry[];
+  return [];
 }
 
 export async function getAllPostSummaries(): Promise<BlogPostSummary[]> {
+  const results: BlogPostSummary[] = [];
+
+  // 1) microCMS 側（全件 + 新しい順で取得）
   if (isMicroCMSEnabled()) {
-    try {
-      const remote = await fetchMicroCMSBlogSummaries();
-      return remote.map(toRemoteSummary);
-    } catch (error) {
-      console.warn('microCMSからの取得に失敗したため、ローカルコンテンツにフォールバックします。', error);
-    }
+    const micro = await fetchMicroSummaries(); // ← ここが全件ページネーション対応版
+    results.push(
+      ...micro.map((m) => ({
+        ...m,
+        source: 'microcms' as const,
+      })),
+    );
   }
 
-  const entries = await getLocalBlogEntries();
-  return entries.map(toLocalSummary);
-}
+  // 2) ローカルMD側（必要なら）
+  const local = await getLocalEntries();
+  results.push(
+    ...local.map((e) => ({
+      source: 'local' as const,
+      slug: e.data.slug,
+      title: e.data.title,
+      description: e.data.description,
+      category: e.data.category ?? null,
+      pubDate: e.data.pubDate,
+      updatedDate: e.data.updatedDate ?? null,
+      heroImage: e.data.heroImage ?? null,
+      entry: e,
+    })),
+  );
 
-export async function getLatestPostSummaries(limit: number): Promise<BlogPostSummary[]> {
-  const posts = await getAllPostSummaries();
-  return posts
-    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf())
-    .slice(0, limit);
-}
-
-export async function getPostSummariesByCategory(): Promise<Record<string, BlogPostSummary[]>> {
-  const posts = await getAllPostSummaries();
-  const grouped = posts.reduce<Record<string, BlogPostSummary[]>>((acc, post) => {
-    if (!post.category) return acc;
-    if (!acc[post.category]) {
-      acc[post.category] = [];
-    }
-    acc[post.category].push(post);
-    return acc;
-  }, {});
-
-  for (const categoryPosts of Object.values(grouped)) {
-    categoryPosts.sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
-  }
-
-  return grouped;
-}
-
-export async function getBlogDetail(slug: string): Promise<BlogPostDetail> {
-  if (isMicroCMSEnabled()) {
-    try {
-      const remote = await fetchMicroCMSBlogDetail(slug);
-      return { ...remote, source: 'microcms' } satisfies RemoteBlogDetail;
-    } catch (error) {
-      console.warn(`microCMSの記事取得に失敗しました (slug: ${slug})。ローカルコンテンツを試みます。`, error);
-    }
-  }
-
-  const entries = await getLocalBlogEntries();
-  const entry = entries.find((post) => post.slug === slug);
-
-  if (!entry) {
-    throw new Error(`Slug "${slug}" に一致するブログ記事が見つかりませんでした。`);
-  }
-
-  return { source: 'local', slug: entry.slug, entry } satisfies LocalBlogDetail;
+  // 公開日時の降順で返す
+  return results.sort((a, b) => {
+    const da = a.pubDate.valueOf();
+    const db = b.pubDate.valueOf();
+    return db - da;
+  });
 }
 
 export async function getBlogSlugs(): Promise<string[]> {
+  const slugs: string[] = [];
+
+  if (isMicroCMSEnabled()) {
+    const ms = await fetchMicroSlugs(); // ← ここも全件版
+    slugs.push(...ms);
+  }
+
+  const local = await getLocalEntries();
+  slugs.push(...local.map((e) => e.data.slug));
+
+  // 重複除去
+  return Array.from(new Set(slugs));
+}
+
+export async function getBlogDetail(slug: string): Promise<BlogPostDetail> {
+  // まず microCMS を見る
   if (isMicroCMSEnabled()) {
     try {
-      return await fetchMicroCMSBlogSlugs();
-    } catch (error) {
-      console.warn('microCMSからスラッグ一覧の取得に失敗しました。ローカルコンテンツにフォールバックします。', error);
+      const d = await fetchMicroDetail(slug);
+      return { ...d, source: 'microcms' as const };
+    } catch {
+      // microCMS に無ければローカルを探す
     }
   }
 
-  const entries = await getLocalBlogEntries();
-  return entries.map((entry) => entry.slug);
+  const local = await getLocalEntries();
+  const hit = local.find((e) => e.data.slug === slug);
+  if (!hit) {
+    throw new Error(`記事が見つかりませんでした（slug: ${slug}）`);
+  }
+  return {
+    source: 'local',
+    slug: hit.data.slug,
+    title: hit.data.title,
+    description: hit.data.description,
+    category: hit.data.category ?? null,
+    pubDate: hit.data.pubDate,
+    updatedDate: hit.data.updatedDate ?? null,
+    heroImage: hit.data.heroImage ?? null,
+    entry: hit,
+  };
 }
