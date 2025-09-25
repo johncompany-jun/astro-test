@@ -18,7 +18,7 @@ const navItems = [
 			<span class="font-display text-lg uppercase tracking-[0.4em] text-brand-text md:text-xl">{SITE_TITLE}</span>
 		</a>
 		<button
-			class="flex h-12 w-12 items-center justify-center rounded-full border border-brand-text/30 text-brand-text transition-colors duration-300 md:hidden"
+			class="relative z-50 flex h-12 w-12 items-center justify-center rounded-full border border-brand-text/30 text-brand-text transition-colors duration-300 md:hidden"
 			aria-expanded="false"
 			aria-controls="primary-navigation"
 			data-menu-toggle
@@ -34,7 +34,7 @@ const navItems = [
 			id="primary-navigation"
 			aria-label="主要ナビゲーション"
 			data-primary-nav
-			class="fixed inset-y-0 right-0 flex w-[80vw] max-w-xs translate-x-full flex-col justify-start gap-10 bg-white/95 px-10 py-32 shadow-[-20px_0_40px_rgba(0,10,21,0.12)] transition-transform duration-300 md:static md:w-auto md:translate-x-0 md:flex-row md:items-center md:bg-transparent md:p-0 md:shadow-none"
+			class="fixed inset-y-0 right-0 z-40 flex min-h-dvh w-[80vw] max-w-xs translate-x-full flex-col justify-start gap-10 overflow-y-auto bg-white/95 px-10 py-28 shadow-[-20px_0_40px_rgba(0,10,21,0.12)] transition-transform duration-300 md:static md:z-auto md:min-h-0 md:w-auto md:translate-x-0 md:flex-row md:items-center md:overflow-visible md:bg-transparent md:p-0 md:shadow-none"
 		>
 			<ul class="flex flex-col gap-6 md:flex-row md:flex-wrap md:items-center md:gap-6">
 				{navItems.map((item) => (
