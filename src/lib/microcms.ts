@@ -259,6 +259,7 @@ export async function fetchBlogSlugs(): Promise<string[]> {
     fields: 'id,slug',
   });
 
+  // slugフィールドがある場合はそれを使い、ない場合はIDを使う
   return data.contents.map((entry) =>
     entry.slug && typeof entry.slug === 'string' && entry.slug.length > 0 ? entry.slug : entry.id
   );
