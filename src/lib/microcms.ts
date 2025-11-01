@@ -211,7 +211,10 @@ export async function fetchBlogSummaries(params?: {
   return data.contents.map(toSummary);
 }
 
-export async function fetchBlogDetail(slug: string, params?: { draftKey?: string }): Promise<BlogDetail> {
+/**
+ * 修正版: slug未使用でも動作する fetchBlogDetail
+ */
+export async function fetchBlogDetail(idOrSlug: string, params?: { draftKey?: string }): Promise<BlogDetail> {
   const queries: MicroCMSQueries = {
     draftKey: params?.draftKey,
   };
@@ -219,23 +222,20 @@ export async function fetchBlogDetail(slug: string, params?: { draftKey?: string
   let entry: MicroCMSBlogContent;
 
   try {
-    // contentId に slug を使う設計の場合はこちらで取得
-    entry = await requestDetail<MicroCMSBlogContent>(slug, queries);
+    // まず contentId（＝microCMSのid）で取得を試みる
+    entry = await requestDetail<MicroCMSBlogContent>(idOrSlug, queries);
   } catch (error) {
-    // contentId が id で、slug はフィールドで管理している場合のフォールバック
-    if (slug) {
-      const list = await requestList<MicroCMSBlogContent>({
-        filters: `slug[equals]${slug}`,
-        limit: 1,
-        draftKey: params?.draftKey,
-      });
-      if (list.contents.length === 0) {
-        throw error;
-      }
-      entry = list.contents[0];
-    } else {
-      throw error;
+    // idで見つからなければ、slugフィールドで検索を試す
+    const list = await requestList<MicroCMSBlogContent>({
+      filters: `slug[equals]${idOrSlug}`,
+      limit: 1,
+      draftKey: params?.draftKey,
+    });
+
+    if (list.contents.length === 0) {
+      throw new Error(`記事が見つかりませんでした（idまたはslug: ${idOrSlug}）`);
     }
+    entry = list.contents[0];
   }
 
   const summary = toSummary(entry);
@@ -253,13 +253,15 @@ export async function fetchBlogDetail(slug: string, params?: { draftKey?: string
   };
 }
 
+/**
+ * 全記事のslugまたはidを取得（slug未使用でもOK）
+ */
 export async function fetchBlogSlugs(): Promise<string[]> {
-  // 全件取得（id/slug のみ）
   const data = await requestListAll<MicroCMSBlogContent>({
     fields: 'id,slug',
   });
 
-  // slugフィールドがある場合はそれを使い、ない場合はIDを使う
+  // slugフィールドが存在すればslug、無ければidを使用
   return data.contents.map((entry) =>
     entry.slug && typeof entry.slug === 'string' && entry.slug.length > 0 ? entry.slug : entry.id
   );
