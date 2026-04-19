@@ -1,0 +1,134 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { getAllPostSummaries } from '../../lib/blog-data';
+
+const allPosts = await getAllPostSummaries();
+
+const postsJson = JSON.stringify(
+	allPosts.map((p) => ({
+		slug: p.slug,
+		title: p.title,
+		description: p.description,
+		category: p.category ?? '',
+		pubDate: p.pubDate.toISOString(),
+	}))
+);
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead title={`記事検索 | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main class="space-y-10">
+			<section class="space-y-4 text-center">
+				<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">Search</p>
+				<h1 class="font-display text-4xl font-semibold tracking-[0.12em] text-brand-text md:text-5xl">
+					記事検索
+				</h1>
+			</section>
+
+			<section class="mx-auto max-w-2xl">
+				<div class="relative">
+					<input
+						id="search-input"
+						type="search"
+						placeholder="キーワードを入力..."
+						class="w-full rounded-2xl border border-brand-text/20 bg-white px-5 py-4 pr-12 text-sm tracking-[0.08em] text-brand-text shadow-lg-soft outline-none transition placeholder:text-brand-text/40 focus:border-brand-text/40 focus:shadow-xl-soft"
+						autofocus
+					/>
+					<svg
+						class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-text/40"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<circle cx="11" cy="11" r="8"></circle>
+						<path d="M21 21l-4.35-4.35"></path>
+					</svg>
+				</div>
+			</section>
+
+			<section class="mx-auto max-w-2xl space-y-4">
+				<p id="result-count" class="text-xs uppercase tracking-[0.2em] text-brand-text/50"></p>
+				<ul id="result-list" class="space-y-4"></ul>
+				<p id="no-results" class="hidden rounded-2xl border border-dashed border-brand-text/20 p-6 text-sm tracking-[0.08em] text-brand-text/50">
+					該当する記事が見つかりませんでした。
+				</p>
+			</section>
+		</main>
+		<Footer />
+
+		<script is:inline define:vars={{ postsJson }}>
+			const posts = JSON.parse(postsJson);
+			const input = document.getElementById('search-input');
+			const list = document.getElementById('result-list');
+			const countEl = document.getElementById('result-count');
+			const noResults = document.getElementById('no-results');
+
+			function formatDate(iso) {
+				const d = new Date(iso);
+				return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+			}
+
+			function render(query) {
+				const q = query.trim().toLowerCase();
+				const filtered = q
+					? posts.filter(
+							(p) =>
+								p.title.toLowerCase().includes(q) ||
+								p.description.toLowerCase().includes(q) ||
+								p.category.toLowerCase().includes(q)
+						)
+					: posts;
+
+				countEl.textContent = q ? `${filtered.length} 件の検索結果` : `全 ${posts.length} 件`;
+
+				if (filtered.length === 0) {
+					list.innerHTML = '';
+					noResults.classList.remove('hidden');
+					return;
+				}
+				noResults.classList.add('hidden');
+
+				list.innerHTML = filtered
+					.map(
+						(p) => `
+					<li class="rounded-2xl border border-brand-text/10 p-5 shadow-lg-soft transition hover:-translate-y-0.5 hover:shadow-xl-soft">
+						<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">${formatDate(p.pubDate)}</p>
+						<a href="/blog/${p.slug}/" class="mt-2 block text-lg font-semibold tracking-[0.08em] text-brand-text transition hover:text-brand-text/70">
+							${escapeHtml(p.title)}
+						</a>
+						<p class="mt-2 text-sm leading-7 tracking-[0.08em] text-brand-text/70">${escapeHtml(p.description)}</p>
+					</li>`
+					)
+					.join('');
+			}
+
+			function escapeHtml(str) {
+				return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+			}
+
+			// URL の ?q= を初期値として使用
+			const params = new URLSearchParams(window.location.search);
+			const initial = params.get('q') ?? '';
+			if (initial) input.value = initial;
+			render(initial);
+
+			input.addEventListener('input', () => {
+				const q = input.value;
+				const url = new URL(window.location.href);
+				q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+				history.replaceState(null, '', url);
+				render(q);
+			});
+		</script>
+	</body>
+</html>

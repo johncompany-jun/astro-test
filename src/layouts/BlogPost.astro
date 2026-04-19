@@ -52,7 +52,7 @@ const { title, description, pubDate, updatedDate, heroImage, contentHtml } = Ast
 						</h1>
 						<hr class="mx-auto w-24 border-brand-text/20" />
 					</header>
-					<div class="space-y-6 text-base leading-8 tracking-wide text-brand-text/80 md:text-lg">
+					<div class="space-y-6 text-base leading-8 tracking-wide text-brand-text/80 md:text-lg [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-blue-800">
 						{contentHtml ? <Fragment set:html={contentHtml} /> : <slot />}
 					</div>
 				</div>

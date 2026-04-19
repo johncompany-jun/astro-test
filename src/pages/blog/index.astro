@@ -47,6 +47,20 @@ const postsByCategory = await getPostSummariesByCategory();
 				<p class="mx-auto max-w-2xl text-sm leading-7 tracking-[0.1em] text-brand-text/70">
 					テレワーク、プログラミング、キャリアアップに関する記事をカテゴリー別にまとめています。
 				</p>
+				<form action="/blog/search/" method="get" class="mx-auto mt-6 flex max-w-md gap-2">
+					<input
+						type="search"
+						name="q"
+						placeholder="記事を検索..."
+						class="flex-1 rounded-xl border border-brand-text/20 bg-white px-4 py-2.5 text-sm tracking-[0.08em] text-brand-text shadow-lg-soft outline-none transition placeholder:text-brand-text/40 focus:border-brand-text/40"
+					/>
+					<button
+						type="submit"
+						class="rounded-xl border border-brand-text/30 px-4 py-2.5 text-xs uppercase tracking-[0.2em] text-brand-text transition hover:bg-brand-text hover:text-white"
+					>
+						検索
+					</button>
+				</form>
 			</section>
 
 			<section class="space-y-6" aria-label="最新3件">
