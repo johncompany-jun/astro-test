@@ -1,17 +1,13 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
-import { getBlogDetail, getBlogSlugs, type BlogPostDetail } from '../../lib/blog-data';
+import { getAllPostDetails, type BlogPostDetail } from '../../lib/blog-data';
 
 export async function getStaticPaths() {
-	const slugs = await getBlogSlugs();
-	const paths = await Promise.all(
-		slugs.map(async (slug) => ({
-			params: { slug },
-			props: { detail: await getBlogDetail(slug) },
-		}))
-	);
-
-	return paths;
+	const details = await getAllPostDetails();
+	return details.map((detail) => ({
+		params: { slug: detail.slug },
+		props: { detail },
+	}));
 }
 
 interface Props {

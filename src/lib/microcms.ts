@@ -254,6 +254,26 @@ export async function fetchBlogDetail(idOrSlug: string, params?: { draftKey?: st
 }
 
 /**
+ * 全記事を本文込みで一括取得（getStaticPaths用）
+ */
+export async function fetchAllBlogDetails(): Promise<BlogDetail[]> {
+  const data = await requestListAll<MicroCMSBlogContent>({
+    orders: '-publishedAt',
+  });
+
+  return data.contents.map((entry) => {
+    const summary = toSummary(entry);
+    const content =
+      typeof entry.body === 'string'
+        ? entry.body
+        : typeof entry.content === 'string'
+        ? entry.content
+        : null;
+    return { ...summary, contentHtml: content, contentRaw: content };
+  });
+}
+
+/**
  * 全記事のslugまたはidを取得（slug未使用でもOK）
  */
 export async function fetchBlogSlugs(): Promise<string[]> {

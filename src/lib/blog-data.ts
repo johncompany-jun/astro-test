@@ -4,6 +4,7 @@ import {
   fetchBlogSummaries as fetchMicroSummaries,
   fetchBlogDetail as fetchMicroDetail,
   fetchBlogSlugs as fetchMicroSlugs,
+  fetchAllBlogDetails as fetchMicroAllDetails,
   isMicroCMSEnabled,
 } from './microcms';
 
@@ -93,6 +94,32 @@ export async function getAllPostSummaries(): Promise<BlogPostSummary[]> {
     const db = b.pubDate.valueOf();
     return db - da;
   });
+}
+
+export async function getAllPostDetails(): Promise<BlogPostDetail[]> {
+  const results: BlogPostDetail[] = [];
+
+  if (isMicroCMSEnabled()) {
+    const micro = await fetchMicroAllDetails();
+    results.push(...micro.map((m) => ({ ...m, source: 'microcms' as const })));
+  }
+
+  const local = await getLocalEntries();
+  results.push(
+    ...local.map((e) => ({
+      source: 'local' as const,
+      slug: e.data.slug,
+      title: e.data.title,
+      description: e.data.description,
+      category: e.data.category ?? null,
+      pubDate: e.data.pubDate,
+      updatedDate: e.data.updatedDate ?? null,
+      heroImage: e.data.heroImage ?? null,
+      entry: e,
+    }))
+  );
+
+  return results;
 }
 
 export async function getBlogSlugs(): Promise<string[]> {
