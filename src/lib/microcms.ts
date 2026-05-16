@@ -157,6 +157,37 @@ function resolveDate(value: string | null | undefined): Date | null {
   return Number.isNaN(date.valueOf()) ? null : date;
 }
 
+function stripHtml(html: string): string {
+  return html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function buildDescription(entry: MicroCMSBlogContent, maxLength = 140): string {
+  const explicit = typeof entry.description === 'string' ? entry.description.trim() : '';
+  if (explicit) return explicit;
+
+  const body =
+    typeof entry.body === 'string'
+      ? entry.body
+      : typeof entry.content === 'string'
+      ? entry.content
+      : '';
+  if (!body) return '';
+
+  const plain = stripHtml(body);
+  if (plain.length <= maxLength) return plain;
+  return plain.slice(0, maxLength).trimEnd() + '…';
+}
+
 export interface BlogSummary {
   id: string;
   slug: string;
@@ -184,7 +215,7 @@ function toSummary(entry: MicroCMSBlogContent): BlogSummary {
     id: entry.id,
     slug,
     title: entry.title ?? slug,
-    description: typeof entry.description === 'string' ? entry.description : '',
+    description: buildDescription(entry),
     category: resolveCategory(entry),
     pubDate,
     updatedDate,
