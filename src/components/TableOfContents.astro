@@ -1,0 +1,35 @@
+---
+import type { TocItem } from '../lib/content';
+
+interface Props {
+	items: TocItem[];
+}
+
+const { items } = Astro.props;
+---
+
+{items.length >= 2 && (
+	<nav
+		aria-label="目次"
+		class="my-8 rounded-2xl border border-brand-text/10 bg-brand-background/40 p-6 shadow-lg-soft"
+	>
+		<p class="mb-4 font-display text-xs uppercase tracking-[0.3em] text-brand-text/60">
+			目次
+		</p>
+		<ol class="space-y-2 text-sm leading-relaxed tracking-wide text-brand-text/80">
+			{items.map((item) => (
+				<li class:list={[item.level === 3 ? 'ml-4' : '']}>
+					<a
+						href={`#${item.id}`}
+						class:list={[
+							'inline-block transition hover:text-brand-text',
+							item.level === 3 ? 'text-brand-text/65 text-[0.85rem]' : 'font-medium',
+						]}
+					>
+						{item.level === 3 ? '– ' : ''}{item.text}
+					</a>
+				</li>
+			))}
+		</ol>
+	</nav>
+)}

@@ -4,11 +4,18 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import TableOfContents from '../components/TableOfContents.astro';
 import {
 	buildArticleJsonLd,
 	buildBreadcrumbJsonLd,
 	getCategoryMeta,
 } from '../lib/seo';
+import {
+	buildToc,
+	optimizeBodyImages,
+	optimizeImage,
+	resolveOgImage,
+} from '../lib/content';
 import type { BlogPostSummary } from '../lib/blog-data';
 
 interface Props {
@@ -38,6 +45,13 @@ const {
 const categoryMeta = getCategoryMeta(category);
 const articleUrl = `/blog/${slug}/`;
 
+const ogImage = resolveOgImage(heroImage, category);
+const optimizedHero = heroImage
+	? optimizeImage(heroImage, { width: 1280, quality: 80, format: 'webp' })
+	: null;
+const { toc, html: processedHtml } = buildToc(contentHtml);
+const bodyHtml = processedHtml ? optimizeBodyImages(processedHtml) : null;
+
 const breadcrumbItems = [
 	{ name: 'HOME', href: '/' },
 	{ name: 'BLOG', href: '/blog/' },
@@ -52,7 +66,7 @@ const jsonLd = [
 		title,
 		description,
 		url: articleUrl,
-		image: heroImage ?? null,
+		image: ogImage,
 		pubDate,
 		updatedDate: updatedDate ?? null,
 		category: category ?? null,
@@ -71,7 +85,7 @@ const jsonLd = [
 		<BaseHead
 			title={title}
 			description={description}
-			image={heroImage ?? undefined}
+			image={ogImage}
 			ogType="article"
 			jsonLd={jsonLd}
 		/>
@@ -84,13 +98,15 @@ const jsonLd = [
 				<Breadcrumbs items={breadcrumbItems} />
 			</div>
 			<article class="space-y-8">
-				{heroImage && (
+				{optimizedHero && (
 					<div class="px-5 md:px-0">
 						<img
-							src={heroImage}
+							src={optimizedHero}
 							alt={title}
 							class="mx-auto w-full max-w-5xl rounded-2xl shadow-xl-soft"
-							loading="lazy"
+							loading="eager"
+							decoding="async"
+							fetchpriority="high"
 						/>
 					</div>
 				)}
@@ -121,8 +137,9 @@ const jsonLd = [
 						</h1>
 						<hr class="mx-auto w-24 border-brand-text/20" />
 					</header>
-					<div class="space-y-6 text-base leading-8 tracking-wide text-brand-text/80 md:text-lg [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-blue-800">
-						{contentHtml ? <Fragment set:html={contentHtml} /> : <slot />}
+					<TableOfContents items={toc} />
+					<div class="space-y-6 text-base leading-8 tracking-wide text-brand-text/80 md:text-lg [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-blue-800 [&_h2]:scroll-mt-24 [&_h3]:scroll-mt-24">
+						{bodyHtml ? <Fragment set:html={bodyHtml} /> : <slot />}
 					</div>
 				</div>
 			</article>
