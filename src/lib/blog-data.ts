@@ -166,6 +166,27 @@ export async function getBlogDetail(slug: string): Promise<BlogPostDetail> {
   };
 }
 
+export async function getRelatedPosts(
+  currentSlug: string,
+  category: string | null,
+  limit = 4
+): Promise<BlogPostSummary[]> {
+  const all = await getAllPostSummaries();
+  const sameCategory = category
+    ? all.filter((p) => p.category === category && p.slug !== currentSlug)
+    : [];
+
+  if (sameCategory.length >= limit) {
+    return sameCategory.slice(0, limit);
+  }
+
+  // 同カテゴリで足りなければ他カテゴリの最新で補完
+  const others = all.filter(
+    (p) => p.slug !== currentSlug && !sameCategory.some((s) => s.slug === p.slug)
+  );
+  return [...sameCategory, ...others].slice(0, limit);
+}
+
 export async function getPostSummariesByCategory(): Promise<Record<string, BlogPostSummary[]>> {
   const posts = await getAllPostSummaries();
 

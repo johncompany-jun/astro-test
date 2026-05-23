@@ -1,0 +1,109 @@
+---
+import BaseHead from '../../../components/BaseHead.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import { SITE_TITLE } from '../../../consts';
+import { CATEGORIES, buildBreadcrumbJsonLd, type CategoryMeta } from '../../../lib/seo';
+import { getPostSummariesByCategory } from '../../../lib/blog-data';
+import type { BlogPostSummary } from '../../../lib/blog-data';
+
+export async function getStaticPaths() {
+	const postsByCategory = await getPostSummariesByCategory();
+	return CATEGORIES.map((category) => ({
+		params: { category: category.id },
+		props: {
+			category,
+			posts: (postsByCategory[category.id] ?? []).sort(
+				(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf()
+			),
+		},
+	}));
+}
+
+interface Props {
+	category: CategoryMeta;
+	posts: BlogPostSummary[];
+}
+
+const { category, posts } = Astro.props;
+
+const pageTitle = `${category.name}の記事一覧 | ${SITE_TITLE}`;
+const pageDescription = category.description;
+
+const breadcrumbItems = [
+	{ name: 'HOME', href: '/' },
+	{ name: 'BLOG', href: '/blog/' },
+	{ name: category.label },
+];
+
+const jsonLd = [
+	buildBreadcrumbJsonLd(
+		breadcrumbItems.map((b) => ({
+			name: b.name,
+			url: b.href ?? `/blog/${category.id}/`,
+		}))
+	),
+];
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead title={pageTitle} description={pageDescription} jsonLd={jsonLd} />
+	</head>
+	<body>
+		<Header />
+		<main class="space-y-12">
+			<div class="pt-6">
+				<Breadcrumbs items={breadcrumbItems} />
+			</div>
+			<section class="mx-auto max-w-3xl space-y-4 px-5 text-center">
+				<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">{category.label}</p>
+				<h1 class="font-display text-3xl font-semibold tracking-[0.12em] text-brand-text md:text-4xl">
+					{category.name}の記事一覧
+				</h1>
+				<p class="mx-auto max-w-2xl text-sm leading-7 tracking-[0.1em] text-brand-text/70">
+					{category.description}
+				</p>
+				<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
+					全 {posts.length} 件
+				</p>
+			</section>
+
+			<section class="mx-auto max-w-5xl px-5">
+				{posts.length === 0 ? (
+					<p class="rounded-2xl border border-dashed border-brand-text/20 p-6 text-center text-sm tracking-[0.08em] text-brand-text/50">
+						このカテゴリーの記事は準備中です。
+					</p>
+				) : (
+					<ul class="grid gap-5 md:grid-cols-2">
+						{posts.map((post) => (
+							<li class="group rounded-2xl border border-brand-text/10 p-5 shadow-lg-soft transition hover:-translate-y-1 hover:shadow-xl-soft">
+								<div class="flex flex-wrap items-center justify-between gap-3">
+									<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
+										<FormattedDate date={post.pubDate} />
+									</p>
+									<span class="text-xs uppercase tracking-[0.3em] text-brand-text/50">{category.label}</span>
+								</div>
+								<a
+									href={`/blog/${post.slug}/`}
+									class="mt-2 block text-base font-semibold leading-relaxed tracking-[0.06em] text-brand-text transition group-hover:text-brand-text/70"
+								>
+									{post.title}
+								</a>
+								{post.description && (
+									<p class="mt-2 text-sm leading-6 tracking-[0.06em] text-brand-text/60 line-clamp-3">
+										{post.description}
+									</p>
+								)}
+							</li>
+						))}
+					</ul>
+				)}
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>

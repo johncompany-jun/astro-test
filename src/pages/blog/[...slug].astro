@@ -1,6 +1,6 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
-import { getAllPostDetails, type BlogPostDetail } from '../../lib/blog-data';
+import { getAllPostDetails, getRelatedPosts, type BlogPostDetail } from '../../lib/blog-data';
 
 export async function getStaticPaths() {
 	const details = await getAllPostDetails();
@@ -23,6 +23,7 @@ let description: string;
 let pubDate: Date;
 let updatedDate: Date | null;
 let heroImage: string | null;
+let category: string | null;
 
 if (detail.source === 'microcms') {
 	contentHtml = detail.contentHtml;
@@ -31,6 +32,7 @@ if (detail.source === 'microcms') {
 	pubDate = detail.pubDate;
 	updatedDate = detail.updatedDate;
 	heroImage = detail.heroImage;
+	category = detail.category;
 } else {
 	const { entry } = detail;
 	const rendered = await entry.render();
@@ -40,7 +42,10 @@ if (detail.source === 'microcms') {
 	pubDate = entry.data.pubDate;
 	updatedDate = entry.data.updatedDate ?? null;
 	heroImage = entry.data.heroImage ?? null;
+	category = entry.data.category ?? null;
 }
+
+const relatedPosts = await getRelatedPosts(detail.slug, category, 4);
 ---
 
 <BlogPost
@@ -50,6 +55,9 @@ if (detail.source === 'microcms') {
 	updatedDate={updatedDate}
 	heroImage={heroImage}
 	contentHtml={contentHtml}
+	slug={detail.slug}
+	category={category}
+	relatedPosts={relatedPosts}
 >
 	{Content && <Content />}
 </BlogPost>

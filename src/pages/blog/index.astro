@@ -2,43 +2,50 @@
 import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import { getAllPostSummaries, getPostSummariesByCategory } from '../../lib/blog-data';
 import FormattedDate from '../../components/FormattedDate.astro';
+import { CATEGORIES, buildBreadcrumbJsonLd } from '../../lib/seo';
 
 const posts = (await getAllPostSummaries()).sort(
 	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf()
 );
 
-const categories = [
-	{
-		id: 'programming',
-		title: 'PROGRAMMING',
-		description: 'プログラミング言語やフレームワークの最新トレンド、実務で使えるヒントを解説。',
-	},
-	{
-		id: 'telework',
-		title: 'TELEWORK',
-		description: '働く場所を自由にするための環境構築術や、リモートチームのコラボレーション事例。',
-	},
-	{
-		id: 'skills',
-		title: 'SKILLS',
-		description: 'キャリアアップや学習計画、生成 AI 時代に求められるリテラシーをまとめています。',
-	},
-];
+const categories = CATEGORIES.map((c) => ({
+	id: c.id,
+	title: c.label,
+	description: c.description,
+}));
 
 const postsByCategory = await getPostSummariesByCategory();
+
+const breadcrumbItems = [
+	{ name: 'HOME', href: '/' },
+	{ name: 'BLOG' },
+];
+
+const jsonLd = [
+	buildBreadcrumbJsonLd(
+		breadcrumbItems.map((b) => ({
+			name: b.name,
+			url: b.href ?? '/blog/',
+		}))
+	),
+];
 ---
 
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={`${SITE_TITLE} | Blog`} description={SITE_DESCRIPTION} />
+		<BaseHead title={`${SITE_TITLE} | Blog`} description={SITE_DESCRIPTION} jsonLd={jsonLd} />
 	</head>
 	<body>
 		<Header />
 		<main class="space-y-16">
+			<div class="pt-6">
+				<Breadcrumbs items={breadcrumbItems} />
+			</div>
 			<section class="space-y-4 text-center">
 				<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">Blog</p>
 				<h1 class="font-display text-4xl font-semibold tracking-[0.12em] text-brand-text md:text-5xl">
@@ -81,14 +88,23 @@ const postsByCategory = await getPostSummariesByCategory();
 			</section>
 
 			{categories.map((category) => {
-				const categoryPosts = postsByCategory[category.id] ?? [];
+				const allCategoryPosts = postsByCategory[category.id] ?? [];
+				const categoryPosts = allCategoryPosts.slice(0, 5);
 				return (
 					<section id={category.id} class="space-y-6">
-						<div class="space-y-2">
-							<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">{category.title}</p>
-							<h2 class="text-2xl font-semibold tracking-[0.12em] text-brand-text">
-								{category.description}
-							</h2>
+						<div class="flex flex-wrap items-end justify-between gap-3">
+							<div class="space-y-2">
+								<p class="font-display text-sm uppercase tracking-[0.4em] text-brand-text/60">{category.title}</p>
+								<h2 class="text-2xl font-semibold tracking-[0.12em] text-brand-text">
+									{category.description}
+								</h2>
+							</div>
+							<a
+								href={`/blog/${category.id}/`}
+								class="text-xs uppercase tracking-[0.2em] text-brand-text/70 underline-offset-4 transition hover:text-brand-text hover:underline"
+							>
+								もっと見る ({allCategoryPosts.length})
+							</a>
 						</div>
 						<ul class="space-y-4">
 							{categoryPosts.map((post) => (

@@ -3,6 +3,13 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import {
+	buildArticleJsonLd,
+	buildBreadcrumbJsonLd,
+	getCategoryMeta,
+} from '../lib/seo';
+import type { BlogPostSummary } from '../lib/blog-data';
 
 interface Props {
 	title: string;
@@ -11,25 +18,77 @@ interface Props {
 	updatedDate?: Date | null;
 	heroImage?: string | null;
 	contentHtml?: string | null;
+	slug: string;
+	category?: string | null;
+	relatedPosts?: BlogPostSummary[];
 }
 
-const { title, description, pubDate, updatedDate, heroImage, contentHtml } = Astro.props;
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	contentHtml,
+	slug,
+	category,
+	relatedPosts = [],
+} = Astro.props;
+
+const categoryMeta = getCategoryMeta(category);
+const articleUrl = `/blog/${slug}/`;
+
+const breadcrumbItems = [
+	{ name: 'HOME', href: '/' },
+	{ name: 'BLOG', href: '/blog/' },
+	...(categoryMeta
+		? [{ name: categoryMeta.label, href: `/blog/${categoryMeta.id}/` }]
+		: []),
+	{ name: title },
+];
+
+const jsonLd = [
+	buildArticleJsonLd({
+		title,
+		description,
+		url: articleUrl,
+		image: heroImage ?? null,
+		pubDate,
+		updatedDate: updatedDate ?? null,
+		category: category ?? null,
+	}),
+	buildBreadcrumbJsonLd(
+		breadcrumbItems.map((b) => ({
+			name: b.name,
+			url: b.href ?? articleUrl,
+		}))
+	),
+];
 ---
 
 <html lang="ja">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead
+			title={title}
+			description={description}
+			image={heroImage ?? undefined}
+			ogType="article"
+			jsonLd={jsonLd}
+		/>
 	</head>
 
 	<body>
 		<Header />
 		<main class="space-y-12">
+			<div class="pt-6">
+				<Breadcrumbs items={breadcrumbItems} />
+			</div>
 			<article class="space-y-8">
 				{heroImage && (
 					<div class="px-5 md:px-0">
 						<img
 							src={heroImage}
-							alt=""
+							alt={title}
 							class="mx-auto w-full max-w-5xl rounded-2xl shadow-xl-soft"
 							loading="lazy"
 						/>
@@ -47,6 +106,16 @@ const { title, description, pubDate, updatedDate, heroImage, contentHtml } = Ast
 								)
 							}
 						</div>
+						{categoryMeta && (
+							<div class="mb-3">
+								<a
+									href={`/blog/${categoryMeta.id}/`}
+									class="inline-block rounded-full border border-brand-text/20 px-3 py-1 text-xs uppercase tracking-[0.2em] text-brand-text/70 transition hover:bg-brand-text hover:text-white"
+								>
+									{categoryMeta.label}
+								</a>
+							</div>
+						)}
 						<h1 class="mb-4 font-display text-3xl tracking-[0.12em] text-brand-text md:text-4xl">
 							{title}
 						</h1>
@@ -57,6 +126,39 @@ const { title, description, pubDate, updatedDate, heroImage, contentHtml } = Ast
 					</div>
 				</div>
 			</article>
+
+			{relatedPosts.length > 0 && (
+				<aside class="mx-auto max-w-3xl px-5" aria-labelledby="related-heading">
+					<div class="border-t border-brand-text/10 pt-10">
+						<h2
+							id="related-heading"
+							class="mb-6 font-display text-xl uppercase tracking-[0.3em] text-brand-text/70"
+						>
+							Related Articles
+						</h2>
+						<ul class="grid gap-5 md:grid-cols-2">
+							{relatedPosts.map((post) => (
+								<li class="group rounded-2xl border border-brand-text/10 p-5 shadow-lg-soft transition hover:-translate-y-1 hover:shadow-xl-soft">
+									<p class="text-xs uppercase tracking-[0.2em] text-brand-text/50">
+										<FormattedDate date={post.pubDate} />
+									</p>
+									<a
+										href={`/blog/${post.slug}/`}
+										class="mt-2 block text-base font-semibold leading-relaxed tracking-[0.06em] text-brand-text transition group-hover:text-brand-text/70"
+									>
+										{post.title}
+									</a>
+									{post.description && (
+										<p class="mt-2 text-sm leading-6 tracking-[0.06em] text-brand-text/60 line-clamp-3">
+											{post.description}
+										</p>
+									)}
+								</li>
+							))}
+						</ul>
+					</div>
+				</aside>
+			)}
 		</main>
 		<Footer />
 	</body>

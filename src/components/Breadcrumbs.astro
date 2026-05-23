@@ -1,0 +1,31 @@
+---
+export interface BreadcrumbCrumb {
+	name: string;
+	href?: string;
+}
+
+interface Props {
+	items: BreadcrumbCrumb[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="パンくずリスト" class="mx-auto max-w-3xl px-5">
+	<ol class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.18em] text-brand-text/60">
+		{items.map((item, index) => (
+			<li class="flex items-center gap-2">
+				{index > 0 && <span aria-hidden="true" class="text-brand-text/30">/</span>}
+				{item.href && index < items.length - 1 ? (
+					<a href={item.href} class="transition hover:text-brand-text">
+						{item.name}
+					</a>
+				) : (
+					<span class="text-brand-text/80" aria-current={index === items.length - 1 ? 'page' : undefined}>
+						{item.name}
+					</span>
+				)}
+			</li>
+		))}
+	</ol>
+</nav>
