@@ -7,6 +7,8 @@ const CATEGORY_OG_FALLBACK: Record<string, string> = {
     'https://images.unsplash.com/photo-1483478550801-ceba5fe50e8e?auto=format&fit=crop&w=1200&q=80',
   skills:
     'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80',
+  ai:
+    'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80',
 };
 
 export function resolveOgImage(

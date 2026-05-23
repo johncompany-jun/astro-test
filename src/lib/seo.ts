@@ -33,6 +33,13 @@ export const CATEGORIES: CategoryMeta[] = [
     description:
       'キャリアアップや学習計画、生成 AI 時代に求められるリテラシーをまとめたカテゴリーです。',
   },
+  {
+    id: 'ai',
+    label: 'AI',
+    name: 'AI活用',
+    description:
+      'ChatGPT・Claude・Copilot などの生成 AI を、エンジニアの開発・学習・副業に活かす実践ノウハウをまとめたカテゴリーです。',
+  },
 ];
 
 export const CATEGORY_MAP: Record<string, CategoryMeta> = Object.fromEntries(
