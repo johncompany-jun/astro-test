@@ -35,6 +35,23 @@
 	img {
 		@apply block h-auto max-w-full;
 	}
+
+	article table {
+		@apply my-6 w-full border-collapse text-sm md:text-base;
+	}
+
+	article thead {
+		@apply bg-brand-text/5;
+	}
+
+	article th,
+	article td {
+		@apply border border-brand-text/20 px-3 py-2 align-top;
+	}
+
+	article th {
+		@apply text-left font-semibold;
+	}
 }
 
 @layer components {
