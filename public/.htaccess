@@ -1,0 +1,19 @@
+# =============================================================
+#  301 リダイレクト設定
+#  削除・統合した記事 → 統合先記事へ評価を引き継ぐ
+#  生成日: 2026-06-03(削除候補7本の統合処理)
+#  注意: このサイトが Apache(レンタルサーバー)で動いている前提。
+#        nginx の場合は server ブロックに同等の rewrite を記述すること。
+# =============================================================
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # --- テレワーク薄記事4本 → 「メリット・デメリット完全ガイド」(sscms7e5w)へ統合 ---
+  RewriteRule ^blog/gncbw2c2ahq/?$  /blog/sscms7e5w/  [R=301,L]
+  RewriteRule ^blog/s_se4l-9mq1/?$  /blog/sscms7e5w/  [R=301,L]
+  RewriteRule ^blog/xvex2wqwbiq/?$  /blog/sscms7e5w/  [R=301,L]
+  RewriteRule ^blog/8rfqxx41hk/?$   /blog/sscms7e5w/  [R=301,L]
+
+  # --- モバイルデュアルディスプレイ → 自宅版(29_rgphpu)へ統合 ---
+  RewriteRule ^blog/3lyaeae6x7-i/?$ /blog/29_rgphpu/  [R=301,L]
+</IfModule>
