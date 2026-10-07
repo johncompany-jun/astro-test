@@ -10,7 +10,7 @@ import { SITE_TITLE } from '../consts';
 	<head>
 		<BaseHead
 			title={`About | ${SITE_TITLE}`}
-			description="Happy Web Engineer の紹介と運営ポリシー"
+			description="Happy Web Engineer の運営者情報・編集方針・広告ポリシーについて。現役エンジニアがフリーランス・プログラミング・キャリア・AI活用の実践知を発信しています。"
 		/>
 	</head>
 	<body>
@@ -22,7 +22,7 @@ import { SITE_TITLE } from '../consts';
 					Happy Web Engineer について
 				</h1>
 				<p class="max-w-3xl text-sm leading-7 tracking-[0.1em] text-brand-text/70">
-					Happy Web Engineer は「自由なエンジニアを目指そう」をテーマに、テレワーク、プログラミング、キャリアアップに関する実践的な知見を発信する個人ブログです。現場で得た学びを日本語で整理し、次の一歩を踏み出すためのアイデアとヒントを提供します。
+					Happy Web Engineer は「自由なエンジニアを目指そう」をテーマに、現役エンジニアが実務で得た知見を日本語で発信する個人運営の技術メディアです。フリーランス・プログラミング・キャリアアップ・AI活用の4カテゴリで、初学者から中級者が「次の一歩」を踏み出すための実践的な情報を提供しています。
 				</p>
 			</section>
 
@@ -30,23 +30,66 @@ import { SITE_TITLE } from '../consts';
 				<div class="space-y-4">
 					<h2 class="font-display text-2xl tracking-[0.12em] text-brand-text">コンテンツのテーマ</h2>
 					<ul class="space-y-3 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
-						<li>・ テレワークを快適にする環境構築や働き方の工夫</li>
-						<li>・ プログラミング言語・フレームワークの最新トレンド</li>
-						<li>・ キャリアアップやスキル構築のロードマップ</li>
+						<li>・ <strong>フリーランス</strong> ─ エージェント活用・単価交渉・確定申告・コワーキング</li>
+						<li>・ <strong>プログラミング</strong> ─ 言語・フレームワーク・開発環境の実践知</li>
+						<li>・ <strong>キャリアアップ</strong> ─ スキル構築・学習ロードマップ・転職戦略</li>
+						<li>・ <strong>AI活用</strong> ─ 開発効率化・副業・最新ツール比較</li>
 					</ul>
 				</div>
 				<div class="rounded-3xl bg-brand-background/70 p-6 shadow-lg-soft">
-					<h2 class="font-display text-2xl tracking-[0.12em] text-brand-text">プロフィール</h2>
+					<h2 class="font-display text-2xl tracking-[0.12em] text-brand-text">運営者プロフィール</h2>
+					<dl class="mt-4 space-y-3 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
+						<div class="flex gap-3">
+							<dt class="shrink-0 font-semibold">運営者</dt>
+							<dd>Jun Matsui(ハンドルネーム)</dd>
+						</div>
+						<div class="flex gap-3">
+							<dt class="shrink-0 font-semibold">所在地</dt>
+							<dd>京都府</dd>
+						</div>
+						<div class="flex gap-3">
+							<dt class="shrink-0 font-semibold">職業</dt>
+							<dd>フルスタックエンジニア / フリーランス</dd>
+						</div>
+						<div class="flex gap-3">
+							<dt class="shrink-0 font-semibold">専門分野</dt>
+							<dd>Web アプリケーション開発(フロントエンド・バックエンド)、BtoB SaaS、生成 AI 活用</dd>
+						</div>
+						<div class="flex gap-3">
+							<dt class="shrink-0 font-semibold">開設</dt>
+							<dd>2025年</dd>
+						</div>
+					</dl>
 					<p class="mt-4 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
-						Kyoto在住のフルスタックエンジニア。BtoB SaaS の開発とチームビルディングを担当しながら、フリーランスとしても活動中。リモートワークの拡張や生成 AI 活用に関心があります。
+						BtoB SaaS の開発とチームビルディングに従事しながら、フリーランスとしても活動中。リモートワーク環境構築と生成 AI 活用に関する実践知を軸に、現場目線で検証した情報を記事にしています。
 					</p>
 				</div>
+			</section>
+
+			<section class="space-y-4">
+				<h2 class="font-display text-2xl tracking-[0.12em] text-brand-text">編集方針</h2>
+				<ul class="space-y-3 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
+					<li>・ <strong>一次情報を重視</strong>:自身の実務経験・サービス利用体験・公式ドキュメントに基づいて執筆します。</li>
+					<li>・ <strong>定期的な更新</strong>:技術トレンドや制度変更(例:インボイス制度、各種料金改定)に応じて記事を見直します。</li>
+					<li>・ <strong>読者の意思決定を支援</strong>:比較・選び方・手順を具体的に示し、迷いを減らすことを優先します。</li>
+					<li>・ <strong>誤り・古い情報の訂正</strong>:ご指摘があれば速やかに検証し、必要に応じて記事を修正します。</li>
+				</ul>
+			</section>
+
+			<section class="rounded-3xl bg-brand-background/70 p-8 shadow-lg-soft">
+				<h2 class="font-display text-2xl tracking-[0.12em] text-brand-text">広告・アフィリエイトプログラムについて</h2>
+				<p class="mt-4 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
+					当サイトは、Amazon.co.jp を宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定された、アフィリエイトプログラムである「Amazonアソシエイト・プログラム」の参加者です。また、A8.net、もしもアフィリエイト、afi-b、ACCESSTRADE をはじめとする第三者配信のアフィリエイト広告サービスを利用しています。
+				</p>
+				<p class="mt-3 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
+					紹介している商品・サービスの選定は編集方針に基づいて独立して行っており、報酬の有無によって評価の内容を変えることはありません。詳細は <a class="underline" href="/privacy-policy/">プライバシーポリシー</a> をご覧ください。
+				</p>
 			</section>
 
 			<section class="rounded-3xl bg-[#f5f5f5] p-8 shadow-[inset_0_0_0_1px_rgba(0,10,21,0.08)]">
 				<h2 class="font-display text-2xl tracking-[0.12em] text-brand-text">お問い合わせ</h2>
 				<p class="mt-4 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
-					記事に関するご感想、取材や執筆のご相談は <a class="underline" data-mailto-u="info" data-mailto-d="happy-m-work.com" data-mailto-fill>info [at] happy-m-work.com</a> までお気軽にご連絡ください。
+					記事に関するご感想、取材・執筆のご相談、アフィリエイトプログラムのご提案は <a class="underline" data-mailto-u="info" data-mailto-d="happy-m-work.com" data-mailto-fill>info [at] happy-m-work.com</a> までお気軽にご連絡ください。X(旧 Twitter)でも情報発信しています: <a class="underline" href="https://x.com/happy_web_eng" target="_blank" rel="noopener noreferrer">@happy_web_eng</a>
 				</p>
 			</section>
 		</main>
