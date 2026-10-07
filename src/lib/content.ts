@@ -118,6 +118,65 @@ export function optimizeBodyImages(html: string): string {
   });
 }
 
+/**
+ * 本文からFAQセクション(H2「よくある質問」等)配下のH3+回答を抽出
+ * - H3テキストを質問、次のH3/H2までの<p><ul><ol>テキストを回答とする
+ * - FAQセクションが見つからない場合は空配列
+ */
+export function extractFaqItems(html: string | null | undefined): Array<{ question: string; answer: string }> {
+  if (!html) return [];
+
+  const FAQ_H2_PATTERN = /よくある質問|FAQ|Q\s*&\s*A|質問と回答/i;
+
+  const h2Match = html.match(
+    new RegExp(`<h2[^>]*>([\\s\\S]*?)<\\/h2>`, 'gi')
+  );
+  if (!h2Match) return [];
+
+  let faqSection: string | null = null;
+  const h2SplitRegex = /<h2[^>]*>([\s\S]*?)<\/h2>/gi;
+  const parts: Array<{ heading: string; start: number; end: number }> = [];
+  let m: RegExpExecArray | null;
+  while ((m = h2SplitRegex.exec(html)) !== null) {
+    parts.push({ heading: stripInnerHtml(m[1]), start: m.index, end: m.index + m[0].length });
+  }
+
+  for (let i = 0; i < parts.length; i++) {
+    if (FAQ_H2_PATTERN.test(parts[i].heading)) {
+      const sectionStart = parts[i].end;
+      const sectionEnd = i + 1 < parts.length ? parts[i + 1].start : html.length;
+      faqSection = html.slice(sectionStart, sectionEnd);
+      break;
+    }
+  }
+
+  if (!faqSection) return [];
+
+  const items: Array<{ question: string; answer: string }> = [];
+  const h3Regex = /<h3[^>]*>([\s\S]*?)<\/h3>/gi;
+  const h3Matches: Array<{ text: string; start: number; end: number }> = [];
+  let h3m: RegExpExecArray | null;
+  while ((h3m = h3Regex.exec(faqSection)) !== null) {
+    h3Matches.push({
+      text: stripInnerHtml(h3m[1]),
+      start: h3m.index,
+      end: h3m.index + h3m[0].length,
+    });
+  }
+
+  for (let i = 0; i < h3Matches.length; i++) {
+    const q = h3Matches[i].text.trim();
+    if (!q) continue;
+    const answerStart = h3Matches[i].end;
+    const answerEnd = i + 1 < h3Matches.length ? h3Matches[i + 1].start : faqSection.length;
+    const answerBlock = faqSection.slice(answerStart, answerEnd);
+    const answer = stripInnerHtml(answerBlock).trim();
+    if (answer) items.push({ question: q, answer });
+  }
+
+  return items;
+}
+
 function stripInnerHtml(html: string): string {
   return html
     .replace(/<[^>]+>/g, '')

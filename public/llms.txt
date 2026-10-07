@@ -1,0 +1,50 @@
+# Happy Web Engineer
+
+> 現役フリーランスSWEが運営する、エンジニアの自由な働き方を支援する技術メディア。フリーランス独立・プログラミング・キャリアアップ・AI活用の4カテゴリで、実務経験に基づく一次情報を発信しています。
+
+## About
+
+- Site: https://happy-m-work.com
+- Operator: Jun Matsui (フリーランス・フルスタックエンジニア / 京都)
+- Language: Japanese
+- Topics: フリーランスエンジニア、プログラミング、キャリア、AI活用、リモートワーク
+- Target audience: 20〜30代の初学者〜中級エンジニア、フリーランス独立検討者、AI活用で副業を始めたい人
+
+## Editorial policy
+
+- 一次情報を重視: 運営者自身の実務経験・サービス利用体験・公式ドキュメントに基づいて執筆
+- 定期更新: 技術トレンドや制度変更(インボイス制度、料金改定等)に応じて見直し
+- 誤り訂正: 指摘があれば検証のうえ速やかに修正
+- 広告開示: アフィリエイトプログラム利用は編集方針から独立し、報酬で評価を変えない
+
+## Key resources
+
+- [About / 運営者情報](https://happy-m-work.com/about/): 運営者プロフィール・編集方針・広告ポリシー
+- [Privacy Policy](https://happy-m-work.com/privacy-policy/): 個人情報・Cookie・GA・ASP取り扱い
+- [Blog index](https://happy-m-work.com/blog/): 全記事一覧
+
+## Categories
+
+- [Freelance](https://happy-m-work.com/blog/freelance/): フリーランスエンジニアの独立手順・エージェント比較・単価相場・コワーキング
+- [Programming](https://happy-m-work.com/blog/programming/): 言語・フレームワーク・開発環境の実践知
+- [Skills](https://happy-m-work.com/blog/skills/): キャリアアップ・学習ロードマップ・転職戦略
+- [AI](https://happy-m-work.com/blog/ai/): ChatGPT・Claude・Copilot等の実務活用
+
+## Flagship articles
+
+- [フリーランスエンジニア おすすめエージェント比較2026](https://happy-m-work.com/blog/freelance-engineer-agent-2026/): 7社比較・独立検討者向けハブ記事
+
+## Related assets
+
+- X: https://x.com/happy_web_eng
+- note: https://note.com/natty_sage2369
+
+## Product in development
+
+- こえまど (koemado): どんなWebサイトにも埋め込めるAI音声オペレーター。WordPress / Laravel / React / Vue および素のHTMLに対応するフレームワーク非依存設計。β版開発中・先行案内受付中(お問い合わせフォーム経由)。
+
+## AI usage policy
+
+- 記事内容の引用・要約は出典明記(https://happy-m-work.com)のうえ歓迎
+- 記事の全文複製・改変配布は禁止
+- 商用利用を含むLLM学習データとしての利用は、記事単位での要約・リンク参照にとどめ、全文スクレイピングは控えてください

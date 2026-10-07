@@ -117,6 +117,27 @@ export interface ArticleJsonLdInput {
   category: string | null;
 }
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export function buildFaqJsonLd(items: FaqItem[]) {
+  if (!items.length) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 export function buildArticleJsonLd(input: ArticleJsonLdInput) {
   const categoryMeta = getCategoryMeta(input.category);
   const image = input.image ?? DEFAULT_OG_IMAGE;
