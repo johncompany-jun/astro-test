@@ -8,10 +8,12 @@ import TableOfContents from '../components/TableOfContents.astro';
 import {
 	buildArticleJsonLd,
 	buildBreadcrumbJsonLd,
+	buildFaqJsonLd,
 	getCategoryMeta,
 } from '../lib/seo';
 import {
 	buildToc,
+	extractFaqItems,
 	optimizeBodyImages,
 	optimizeImage,
 	resolveOgImage,
@@ -61,6 +63,9 @@ const breadcrumbItems = [
 	{ name: title },
 ];
 
+const faqItems = extractFaqItems(contentHtml);
+const faqJsonLd = buildFaqJsonLd(faqItems);
+
 const jsonLd = [
 	buildArticleJsonLd({
 		title,
@@ -77,6 +82,7 @@ const jsonLd = [
 			url: b.href ?? articleUrl,
 		}))
 	),
+	...(faqJsonLd ? [faqJsonLd] : []),
 ];
 ---
 
@@ -141,6 +147,20 @@ const jsonLd = [
 					<div class="space-y-6 text-base leading-8 tracking-wide text-brand-text/80 md:text-lg [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-blue-800 [&_h2]:scroll-mt-24 [&_h3]:scroll-mt-24">
 						{bodyHtml ? <Fragment set:html={bodyHtml} /> : <slot />}
 					</div>
+					<aside class="mt-12 rounded-3xl border border-brand-text/10 bg-brand-background/70 p-6 shadow-lg-soft">
+						<p class="font-display text-xs uppercase tracking-[0.4em] text-brand-text/60">Author</p>
+						<p class="mt-2 font-display text-lg tracking-[0.12em] text-brand-text">Jun Matsui</p>
+						<p class="mt-3 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
+							フリーランスのフルスタックエンジニア(京都)。BtoB SaaS開発とAI活用を軸に実務経験で得た知見を発信。AI音声オペレーター「こえまど」開発中。
+						</p>
+						<p class="mt-4 text-sm tracking-[0.08em]">
+							<a class="text-blue-600 underline underline-offset-2 hover:text-blue-800" href="https://x.com/happy_web_eng" target="_blank" rel="noopener noreferrer">X @happy_web_eng</a>
+							<span class="mx-2 text-brand-text/40">/</span>
+							<a class="text-blue-600 underline underline-offset-2 hover:text-blue-800" href="https://note.com/natty_sage2369" target="_blank" rel="noopener noreferrer">note @natty_sage2369</a>
+							<span class="mx-2 text-brand-text/40">/</span>
+							<a class="text-blue-600 underline underline-offset-2 hover:text-blue-800" href="/about/">運営者情報</a>
+						</p>
+					</aside>
 				</div>
 			</article>
 
