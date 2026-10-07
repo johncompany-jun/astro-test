@@ -16,4 +16,18 @@
 
   # --- モバイルデュアルディスプレイ → 自宅版(29_rgphpu)へ統合 ---
   RewriteRule ^blog/3lyaeae6x7-i/?$ /blog/29_rgphpu/  [R=301,L]
+
+  # =============================================================
+  #  カテゴリリネーム: telework → freelance (2026-10-07)
+  #  カテゴリページ本体と、画面上に残っているアンカーからのリンクを両方捕捉
+  # =============================================================
+  # カテゴリ一覧ページ
+  RewriteRule ^blog/telework/?$  /blog/freelance/  [R=301,L]
+
+  # 削除5本(物販系・2026-10-07削除分): 近縁な残存記事またはカテゴリ先へ送る
+  RewriteRule ^blog/9rlq15k9h/?$     /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/8l8dtr-gpad/?$   /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/0y8o9cki9/?$     /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/w67q2zpceq06/?$  /blog/vdokda6t1p9y/  [R=301,L]
+  RewriteRule ^blog/m38wpkrue/?$     /blog/c89m8d_pvbge/  [R=301,L]
 </IfModule>

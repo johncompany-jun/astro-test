@@ -19,3 +19,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# local-only: article drafts and dev preview pages
+drafts/
+src/pages/preview/

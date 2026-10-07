@@ -3,7 +3,7 @@ import { DEFAULT_OG_IMAGE } from './seo';
 const CATEGORY_OG_FALLBACK: Record<string, string> = {
   programming:
     'https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=1200&q=80',
-  telework:
+  freelance:
     'https://images.unsplash.com/photo-1483478550801-ceba5fe50e8e?auto=format&fit=crop&w=1200&q=80',
   skills:
     'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80',

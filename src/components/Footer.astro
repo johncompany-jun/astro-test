@@ -3,7 +3,7 @@
 		<div class="space-y-4">
 			<p class="font-display text-lg tracking-[0.3em] uppercase">Happy Web Engineer</p>
 			<p class="max-w-sm text-sm leading-7 tracking-[0.08em] text-white/80">
-				自由なエンジニアを目指す人のために、テレワーク・プログラミング・キャリアアップの最新情報を発信しています。
+				自由なエンジニアを目指す人のために、フリーランス・プログラミング・キャリアアップ・AI活用の最新情報を発信しています。
 			</p>
 		</div>
 		<div class="grid flex-1 gap-10 text-sm tracking-[0.08em] md:grid-cols-3">
@@ -11,7 +11,7 @@
 				<h3 class="mb-4 font-display text-xs uppercase tracking-[0.4em] text-white/50">Categories</h3>
 				<ul class="space-y-3">
 					<li><a class="text-white/80 transition hover:text-white" href="/blog/programming/">プログラミング</a></li>
-					<li><a class="text-white/80 transition hover:text-white" href="/blog/telework/">テレワーク</a></li>
+					<li><a class="text-white/80 transition hover:text-white" href="/blog/freelance/">フリーランス</a></li>
 					<li><a class="text-white/80 transition hover:text-white" href="/blog/skills/">スキルアップ</a></li>
 					<li><a class="text-white/80 transition hover:text-white" href="/blog/ai/">AI活用</a></li>
 				</ul>
@@ -21,7 +21,7 @@
 				<ul class="space-y-3">
 					<li><a class="text-white/80 transition hover:text-white" href="/blog/">ブログ</a></li>
 					<li><a class="text-white/80 transition hover:text-white" href="/about/">サイトについて</a></li>
-					<li><a class="text-white/80 transition hover:text-white" href="mailto:info@happy-m-work.com">お問い合わせ</a></li>
+					<li><a class="text-white/80 transition hover:text-white" data-mailto-u="info" data-mailto-d="happy-m-work.com">お問い合わせ</a></li>
 				</ul>
 			</div>
 			<div>
@@ -37,3 +37,14 @@
 		© {new Date().getFullYear()} Happy Web Engineer. All Rights Reserved.
 	</p>
 </footer>
+
+<script>
+	document.querySelectorAll<HTMLAnchorElement>('a[data-mailto-u][data-mailto-d]').forEach((el) => {
+		const u = el.dataset.mailtoU;
+		const d = el.dataset.mailtoD;
+		if (!u || !d) return;
+		const addr = `${u}@${d}`;
+		el.setAttribute('href', `mailto:${addr}`);
+		if (el.hasAttribute('data-mailto-fill')) el.textContent = addr;
+	});
+</script>
