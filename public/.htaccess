@@ -65,4 +65,16 @@
   RewriteRule ^blog/90-jzi6c5/?$     /blog/22ivt5mg3hl8/  [R=301,L]
   RewriteRule ^blog/n3pez-7xhz/?$    /blog/22ivt5mg3hl8/  [R=301,L]
   RewriteRule ^blog/9_fer36t1f0j/?$  /blog/22ivt5mg3hl8/  [R=301,L]
+
+  # =============================================================
+  #  言語比較クラスタ統合(2026-10-08・c-ux14j-gkへ集約)
+  # =============================================================
+  # Python vs JavaScript → 柱記事(プログラミング言語選び完全ガイド)へ
+  RewriteRule ^blog/a9zf6tbqz7i/?$   /blog/c-ux14j-gk/  [R=301,L]
+
+  # =============================================================
+  #  フレームワーク比較クラスタ統合(2026-10-08・j20y_ctatomへ集約)
+  # =============================================================
+  # Laravel vs Rails → 柱記事(Webフレームワーク選び完全ガイド)へ
+  RewriteRule ^blog/dhpibb4u0e/?$    /blog/j20y_ctatom/  [R=301,L]
 </IfModule>
