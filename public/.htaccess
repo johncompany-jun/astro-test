@@ -98,4 +98,25 @@
   # 転職体験談 / 転職失敗パターン → 柱記事(転職成功・失敗パターン完全ガイド)へ
   RewriteRule ^blog/kpop1ptu3/?$     /blog/gni6zt10mb/  [R=301,L]
   RewriteRule ^blog/zdtgke5m_-r/?$   /blog/gni6zt10mb/  [R=301,L]
+
+  # =============================================================
+  #  Dockerクラスタ統合(2026-10-08・5h8pglq99zへ集約)
+  # =============================================================
+  # Docker Compose / Laravel Sail → 柱記事(Docker完全ガイド)へ
+  RewriteRule ^blog/2t2udyn-dflk/?$  /blog/5h8pglq99z/  [R=301,L]
+  RewriteRule ^blog/53gbgjnwof/?$    /blog/5h8pglq99z/  [R=301,L]
+
+  # =============================================================
+  #  API/認証クラスタ統合(2026-10-08・pxhbtzmvqwwgへ集約)
+  # =============================================================
+  # OAuth / REST vs GraphQL → 柱記事(API設計・認証完全ガイド)へ
+  RewriteRule ^blog/fh_mdk6qx/?$     /blog/pxhbtzmvqwwg/  [R=301,L]
+  RewriteRule ^blog/90shzfs36/?$     /blog/pxhbtzmvqwwg/  [R=301,L]
+
+  # =============================================================
+  #  独学・モチベーション・NG習慣クラスタ統合(2026-10-08・6ifrokml19ddへ集約)
+  # =============================================================
+  # モチベ維持 / NG習慣 → 柱記事(独学挫折回避完全ガイド)へ
+  RewriteRule ^blog/agolki3th/?$     /blog/6ifrokml19dd/  [R=301,L]
+  RewriteRule ^blog/8clfvjbdvo/?$    /blog/6ifrokml19dd/  [R=301,L]
 </IfModule>
