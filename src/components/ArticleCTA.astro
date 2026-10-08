@@ -1,0 +1,186 @@
+---
+interface CTACard {
+	label: string;
+	title: string;
+	description: string;
+	href: string;
+	external?: boolean;
+	sponsored?: boolean;
+	tone?: 'brand' | 'accent' | 'muted';
+}
+
+interface Props {
+	category?: string | null;
+}
+
+const { category } = Astro.props;
+
+const CTAS: Record<string, CTACard[]> = {
+	freelance: [
+		{
+			label: '当サイト一押し',
+			title: 'フリーランスエンジニアエージェント7社比較',
+			description: '現役SWEが実務観点で単価・保障・リモート比率を比較。独立検討者向けハブ記事。',
+			href: '/blog/freelance-engineer-agent-2026/',
+			tone: 'brand',
+		},
+		{
+			label: 'PR',
+			title: 'Midworks(ミッドワークス)',
+			description: '正社員並みの保障(給与保障・交通費・経費)で安心して独立できるエージェント。',
+			href: 'https://px.a8.net/svt/ejp?a8mat=4BEAWY+56Y4QA+3TVC+BWVTE',
+			external: true,
+			sponsored: true,
+			tone: 'accent',
+		},
+		{
+			label: '関連記事',
+			title: 'フリーランスの確定申告・インボイス完全ガイド',
+			description: '青色65万円控除・インボイス制度・タックスナップでの効率化まで実務解説。',
+			href: '/blog/freelance-engineer-tax-return-2026/',
+			tone: 'muted',
+		},
+	],
+	programming: [
+		{
+			label: '次のステップ',
+			title: 'フリーランスエンジニアエージェント7社比較',
+			description: '実力がついたら単価アップを。現役SWEが実務観点で比較したハブ記事。',
+			href: '/blog/freelance-engineer-agent-2026/',
+			tone: 'brand',
+		},
+		{
+			label: 'PR',
+			title: '侍エンジニア',
+			description: 'マンツーマン指導でオリジナルWebサービスを完成できるプログラミングスクール。',
+			href: 'https://t.afi-b.com/visit.php?a=Q9264Q-s422981j&p=x964282L',
+			external: true,
+			sponsored: true,
+			tone: 'accent',
+		},
+		{
+			label: 'PR',
+			title: 'RUNTEQ(ランテック)',
+			description: '1,000時間の実務レベル学習カリキュラム。Web系自社開発企業への就職に強い。',
+			href: 'https://t.felmat.net/fmcl?ak=I4846Y.1.B1266003.Z129129X&vod=',
+			external: true,
+			sponsored: true,
+			tone: 'accent',
+		},
+	],
+	skills: [
+		{
+			label: '当サイト一押し',
+			title: '会社員エンジニアがフリーランスになる完全手順',
+			description: '準備ゼロからでも独立できる具体的ステップを現役SWEが解説。',
+			href: '/blog/freelance-engineer-how-to-become-2026/',
+			tone: 'brand',
+		},
+		{
+			label: 'PR',
+			title: '侍エンジニア',
+			description: '転職支援付きコースでキャリアチェンジを目指す人向けプログラミングスクール。',
+			href: 'https://t.afi-b.com/visit.php?a=Q9264Q-s422981j&p=x964282L',
+			external: true,
+			sponsored: true,
+			tone: 'accent',
+		},
+		{
+			label: 'PR',
+			title: 'Midworks(ミッドワークス)',
+			description: '正社員並みの保障つきで独立初月から安心して稼動できるフリーランスエージェント。',
+			href: 'https://px.a8.net/svt/ejp?a8mat=4BEAWY+56Y4QA+3TVC+BWVTE',
+			external: true,
+			sponsored: true,
+			tone: 'accent',
+		},
+	],
+	ai: [
+		{
+			label: '当サイト一押し',
+			title: 'AIで副業を始める方法 完全ガイド 2026',
+			description: '初心者でも稼げるAI副業7選と始め方。実務経験ベースで解説。',
+			href: '/blog/eb7xy3n3rtor/',
+			tone: 'brand',
+		},
+		{
+			label: 'PR',
+			title: '侍エンジニア(AI対応コース)',
+			description: 'AI活用スキルを習得できるマンツーマン型プログラミングスクール。',
+			href: 'https://t.afi-b.com/visit.php?a=Q9264Q-s422981j&p=x964282L',
+			external: true,
+			sponsored: true,
+			tone: 'accent',
+		},
+		{
+			label: 'PR',
+			title: 'Midworks(ミッドワークス)',
+			description: 'AI案件・リモート案件も豊富。保障つきでフリーランスとして独立可能。',
+			href: 'https://px.a8.net/svt/ejp?a8mat=4BEAWY+56Y4QA+3TVC+BWVTE',
+			external: true,
+			sponsored: true,
+			tone: 'accent',
+		},
+	],
+};
+
+const cards = (category && CTAS[category]) || CTAS.freelance;
+
+const toneClass = {
+	brand: 'border-brand-text/30 bg-brand-background',
+	accent: 'border-amber-200 bg-amber-50/60',
+	muted: 'border-brand-text/10 bg-white',
+} as const;
+
+const btnTone = {
+	brand: 'bg-brand-text text-white hover:bg-brand-text/85',
+	accent: 'bg-amber-500 text-white hover:bg-amber-600',
+	muted: 'bg-brand-text/90 text-white hover:bg-brand-text',
+} as const;
+---
+
+<aside
+	class="mx-auto mt-12 max-w-3xl px-5"
+	aria-labelledby="cta-heading"
+>
+	<div class="border-t border-brand-text/10 pt-10">
+		<h2
+			id="cta-heading"
+			class="mb-6 font-display text-xl uppercase tracking-[0.3em] text-brand-text/70"
+		>
+			Next Step
+		</h2>
+		<ul class="grid gap-5 md:grid-cols-3">
+			{cards.map((c) => (
+				<li
+					class={`flex flex-col rounded-2xl border p-5 shadow-lg-soft transition hover:-translate-y-1 hover:shadow-xl-soft ${toneClass[c.tone ?? 'muted']}`}
+				>
+					<span class="mb-2 inline-block self-start rounded-full border border-brand-text/20 bg-white/70 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-brand-text/70">
+						{c.label}
+					</span>
+					<p class="mb-2 text-base font-semibold leading-relaxed tracking-[0.04em] text-brand-text">
+						{c.title}
+					</p>
+					<p class="mb-4 flex-1 text-sm leading-6 tracking-[0.04em] text-brand-text/70">
+						{c.description}
+					</p>
+					<a
+						href={c.href}
+						class={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium tracking-[0.08em] no-underline transition ${btnTone[c.tone ?? 'muted']}`}
+						{...(c.external
+							? {
+									target: '_blank',
+									rel: c.sponsored ? 'noopener sponsored' : 'noopener noreferrer',
+								}
+							: {})}
+					>
+						{c.external ? '詳しく見る →' : '記事を読む →'}
+					</a>
+				</li>
+			))}
+		</ul>
+		<p class="mt-4 text-xs tracking-[0.08em] text-brand-text/50">
+			※ 「PR」表示のあるカードは広告リンクです。詳しくは<a href="/about/" class="underline underline-offset-2">広告ポリシー</a>をご覧ください。
+		</p>
+	</div>
+</aside>

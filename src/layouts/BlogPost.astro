@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import ArticleCTA from '../components/ArticleCTA.astro';
 import {
 	buildArticleJsonLd,
 	buildBreadcrumbJsonLd,
@@ -163,6 +164,8 @@ const jsonLd = [
 					</aside>
 				</div>
 			</article>
+
+			<ArticleCTA category={category} />
 
 			{relatedPosts.length > 0 && (
 				<aside class="mx-auto max-w-3xl px-5" aria-labelledby="related-heading">
