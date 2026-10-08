@@ -10,11 +10,13 @@ import {
 	buildArticleJsonLd,
 	buildBreadcrumbJsonLd,
 	buildFaqJsonLd,
+	buildHowToJsonLd,
 	getCategoryMeta,
 } from '../lib/seo';
 import {
 	buildToc,
 	extractFaqItems,
+	extractHowToSteps,
 	optimizeBodyImages,
 	optimizeImage,
 	resolveOgImage,
@@ -67,6 +69,13 @@ const breadcrumbItems = [
 const faqItems = extractFaqItems(contentHtml);
 const faqJsonLd = buildFaqJsonLd(faqItems);
 
+const howToSteps = extractHowToSteps(contentHtml);
+const howToJsonLd = buildHowToJsonLd({
+	name: title,
+	description,
+	steps: howToSteps,
+});
+
 const jsonLd = [
 	buildArticleJsonLd({
 		title,
@@ -84,6 +93,7 @@ const jsonLd = [
 		}))
 	),
 	...(faqJsonLd ? [faqJsonLd] : []),
+	...(howToJsonLd ? [howToJsonLd] : []),
 ];
 ---
 

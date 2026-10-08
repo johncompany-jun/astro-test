@@ -46,8 +46,24 @@ export default defineConfig({
 		tailwind(),
 		sitemap({
 			serialize(item) {
-				const lastmod = blogLastmod.get(item.url);
-				return lastmod ? { ...item, lastmod } : item;
+				const url = item.url;
+				const lastmod = blogLastmod.get(url);
+				let priority = 0.5;
+				let changefreq = 'monthly';
+				if (url === `${SITE}/`) {
+					priority = 1.0;
+					changefreq = 'daily';
+				} else if (url === `${SITE}/blog/` || /\/blog\/(freelance|programming|skills|ai)\/$/.test(url)) {
+					priority = 0.9;
+					changefreq = 'daily';
+				} else if (url.includes('/blog/')) {
+					priority = 0.7;
+					changefreq = 'weekly';
+				} else if (url === `${SITE}/about/` || url === `${SITE}/privacy-policy/`) {
+					priority = 0.6;
+					changefreq = 'monthly';
+				}
+				return { ...item, ...(lastmod && { lastmod }), priority, changefreq };
 			},
 		}),
 	],

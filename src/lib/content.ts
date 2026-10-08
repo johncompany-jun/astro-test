@@ -177,6 +177,80 @@ export function extractFaqItems(html: string | null | undefined): Array<{ questi
   return items;
 }
 
+/**
+ * 本文からHowToステップ(H2「〜手順」「〜ステップ」等の配下のH3/olリスト)を抽出
+ * - 手順系H2が無ければ空配列
+ * - H3見出し or olのli要素を各ステップとして扱う
+ */
+export function extractHowToSteps(
+  html: string | null | undefined
+): Array<{ name: string; text: string }> {
+  if (!html) return [];
+
+  const HOWTO_H2_PATTERN = /手順|ステップ|やり方|進め方|方法|作り方|使い方|フロー|導入手順|開設フロー|開設手順|全体フロー/i;
+
+  const h2SplitRegex = /<h2[^>]*>([\s\S]*?)<\/h2>/gi;
+  const parts: Array<{ heading: string; start: number; end: number }> = [];
+  let m: RegExpExecArray | null;
+  while ((m = h2SplitRegex.exec(html)) !== null) {
+    parts.push({ heading: stripInnerHtml(m[1]), start: m.index, end: m.index + m[0].length });
+  }
+  if (!parts.length) return [];
+
+  // 最も早く見つかった手順系H2セクションを採用
+  let howtoSection: string | null = null;
+  for (let i = 0; i < parts.length; i++) {
+    if (HOWTO_H2_PATTERN.test(parts[i].heading)) {
+      const sectionStart = parts[i].end;
+      const sectionEnd = i + 1 < parts.length ? parts[i + 1].start : html.length;
+      howtoSection = html.slice(sectionStart, sectionEnd);
+      break;
+    }
+  }
+  if (!howtoSection) return [];
+
+  const steps: Array<{ name: string; text: string }> = [];
+
+  // パターン1: H3見出しをステップ名として扱う
+  const h3Regex = /<h3[^>]*>([\s\S]*?)<\/h3>/gi;
+  const h3Matches: Array<{ text: string; start: number; end: number }> = [];
+  let h3m: RegExpExecArray | null;
+  while ((h3m = h3Regex.exec(howtoSection)) !== null) {
+    h3Matches.push({
+      text: stripInnerHtml(h3m[1]),
+      start: h3m.index,
+      end: h3m.index + h3m[0].length,
+    });
+  }
+
+  if (h3Matches.length >= 2) {
+    for (let i = 0; i < h3Matches.length; i++) {
+      const name = h3Matches[i].text.trim();
+      if (!name) continue;
+      const bodyStart = h3Matches[i].end;
+      const bodyEnd = i + 1 < h3Matches.length ? h3Matches[i + 1].start : howtoSection.length;
+      const text = stripInnerHtml(howtoSection.slice(bodyStart, bodyEnd)).trim();
+      if (text) steps.push({ name, text: text.slice(0, 500) });
+    }
+    return steps;
+  }
+
+  // パターン2: ol/liをステップとして扱う
+  const olMatch = howtoSection.match(/<ol[^>]*>([\s\S]*?)<\/ol>/i);
+  if (olMatch) {
+    const liRegex = /<li[^>]*>([\s\S]*?)<\/li>/gi;
+    let liM: RegExpExecArray | null;
+    let step = 1;
+    while ((liM = liRegex.exec(olMatch[1])) !== null) {
+      const text = stripInnerHtml(liM[1]).trim();
+      if (text) steps.push({ name: `ステップ${step}`, text: text.slice(0, 500) });
+      step++;
+    }
+  }
+
+  return steps;
+}
+
 function stripInnerHtml(html: string): string {
   return html
     .replace(/<[^>]+>/g, '')

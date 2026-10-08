@@ -138,6 +138,33 @@ export function buildFaqJsonLd(items: FaqItem[]) {
   };
 }
 
+export interface HowToStep {
+  name: string;
+  text: string;
+}
+
+export interface HowToJsonLdInput {
+  name: string;
+  description: string;
+  steps: HowToStep[];
+}
+
+export function buildHowToJsonLd(input: HowToJsonLdInput) {
+  if (!input.steps.length || input.steps.length < 2) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: input.name,
+    description: input.description,
+    step: input.steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+}
+
 export function buildArticleJsonLd(input: ArticleJsonLdInput) {
   const categoryMeta = getCategoryMeta(input.category);
   const image = input.image ?? DEFAULT_OG_IMAGE;
