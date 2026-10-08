@@ -57,4 +57,12 @@
   RewriteRule ^blog/u_7_ga07es5x/?$  /blog/freelance-engineer-how-to-become-2026/  [R=301,L]
   # 在宅集中力時間術 → ライフハック系残存記事 or カテゴリ
   RewriteRule ^blog/y574q7kpw0ih/?$  /blog/freelance/  [R=301,L]
+
+  # =============================================================
+  #  サーバークラスタ統合3本(2026-10-08・22ivt5mg3hl8へ集約)
+  # =============================================================
+  # VPS vs レンタサバ・格安レンタサバ・クラウド導入 → 柱記事(個人開発・副業に最適なサーバー完全ガイド)へ
+  RewriteRule ^blog/90-jzi6c5/?$     /blog/22ivt5mg3hl8/  [R=301,L]
+  RewriteRule ^blog/n3pez-7xhz/?$    /blog/22ivt5mg3hl8/  [R=301,L]
+  RewriteRule ^blog/9_fer36t1f0j/?$  /blog/22ivt5mg3hl8/  [R=301,L]
 </IfModule>
