@@ -101,18 +101,41 @@ import { SITE_TITLE } from '../consts';
 						<dd>β版開発中(公開準備中)</dd>
 					</div>
 				</dl>
-				<p class="mt-5 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
-					β版リリースの先行案内をご希望の方は、お問い合わせフォームよりご連絡ください。
-				</p>
-				<div class="mt-6 rounded-2xl border border-dashed border-brand-text/20 bg-white/70 p-5">
-					<p class="mb-3 font-display text-xs uppercase tracking-[0.3em] text-brand-text/60">UI Preview</p>
-					<p class="mb-4 text-xs leading-6 tracking-[0.06em] text-brand-text/70">
-						画面右下に表示される青いボタンが「こえまど」ウィジェットです。クリックすると実際のUIが開きます(β版未リリースのため、送信操作後はエラー表示になります)。
+				<div class="mt-6 rounded-2xl border border-brand-text/20 bg-white/80 p-6">
+					<p class="font-display text-xs uppercase tracking-[0.3em] text-brand-text/60">β先行案内 受付中</p>
+					<p class="mt-3 text-sm leading-7 tracking-[0.08em] text-brand-text/80">
+						「こえまど」β版の公開準備が整い次第、先行して案内をお届けします。興味をお持ちの方は、以下のボタンから意思表明をお願いします(お名前・所属などあればメール本文にご記入ください)。
 					</p>
-					<ai-op-widget mode="floating"></ai-op-widget>
-					<script is:inline type="module" src="/widget/ai-op-widget.js"></script>
+					<p class="mt-5">
+						<a
+							class="inline-flex items-center justify-center rounded-full bg-brand-text px-6 py-3 text-sm font-medium tracking-[0.08em] text-white no-underline transition hover:bg-brand-text/85"
+							data-koemado-mailto
+							href="#"
+						>
+							β先行案内を希望する →
+						</a>
+					</p>
+					<p class="mt-3 text-xs leading-6 tracking-[0.06em] text-brand-text/60">
+						ボタンを押すとお使いのメールソフトが起動し、件名と定型文が入力された状態で開きます。送信いただければ受付完了です。
+					</p>
 				</div>
 			</section>
+			<script is:inline>
+				(function () {
+					const EMAIL = 'info' + '@' + 'happy-m-work.com';
+					const SUBJECT = encodeURIComponent('【β先行案内希望】こえまど');
+					const BODY = encodeURIComponent(
+						'こえまどβ版の先行案内を希望します。\n\n' +
+						'■ お名前(任意):\n' +
+						'■ ご所属・サイトURL(任意):\n' +
+						'■ 想定している利用イメージ(任意):\n\n' +
+						'※ ご連絡いただいた内容は、β先行案内のご案内にのみ使用いたします。'
+					);
+					document.querySelectorAll('a[data-koemado-mailto]').forEach(function (el) {
+						el.setAttribute('href', 'mailto:' + EMAIL + '?subject=' + SUBJECT + '&body=' + BODY);
+					});
+				})();
+			</script>
 
 			<section class="space-y-4">
 				<h2 class="font-display text-2xl tracking-[0.12em] text-brand-text">編集方針</h2>
