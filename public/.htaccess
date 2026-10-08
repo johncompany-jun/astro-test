@@ -30,4 +30,23 @@
   RewriteRule ^blog/0y8o9cki9/?$     /blog/freelance/  [R=301,L]
   RewriteRule ^blog/w67q2zpceq06/?$  /blog/vdokda6t1p9y/  [R=301,L]
   RewriteRule ^blog/m38wpkrue/?$     /blog/c89m8d_pvbge/  [R=301,L]
+
+  # =============================================================
+  #  削除11本(薄い記事・カニバリ・テレワーク色強すぎ・2026-10-08削除分)
+  # =============================================================
+  # VPN重複2本 → VPN比較記事へ
+  RewriteRule ^blog/fgd1dqicgjcd/?$  /blog/c89m8d_pvbge/  [R=301,L]
+  RewriteRule ^blog/d7u8g6tnckd/?$   /blog/c89m8d_pvbge/  [R=301,L]
+  # コワーキング重複2本 → コワーキング比較記事へ
+  RewriteRule ^blog/lnr6r6nyiag/?$   /blog/qwvejtgmx/  [R=301,L]
+  RewriteRule ^blog/fod2rgo1-98/?$   /blog/qwvejtgmx/  [R=301,L]
+  # タスク管理重複 → PM/タスクツール記事へ
+  RewriteRule ^blog/8ij7s2o-wqn/?$   /blog/o-cjvi8_i_d/  [R=301,L]
+  # 薄い6本 → フリーランスカテゴリへ
+  RewriteRule ^blog/exwsj2f5b/?$     /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/c9oxt6bwfu39/?$  /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/l8wi1yg9wdcz/?$  /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/0_-72b69_7yj/?$  /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/ypocbockas/?$    /blog/freelance/  [R=301,L]
+  RewriteRule ^blog/g0xy674ih6/?$    /blog/freelance/  [R=301,L]
 </IfModule>
