@@ -1,65 +1,103 @@
-# astro-test
+# happy-m-work
 
-Astro 製のブログ／コンテンツサイト。高速・SEO 対応・MD/MDX 記事に対応し、CI/CD とホスティング（Vercel / Netlify / GitHub Pages）を前提にしています。
+[Happy Web Engineer](https://happy-m-work.com) のソースコードリポジトリ。会社員エンジニアの独立／迷い／戻り判断を、エージェントで失敗した現役 SWE が実体験で支援するメディアサイト。
 
-## ✨ 特長
+- Production: https://happy-m-work.com
+- Repository: https://github.com/johncompany-jun/happy-m-work
 
-- 🚀 高速ビルド & 100 点に近いパフォーマンス
-- 📝 Markdown / MDX 記事対応（Content Collections）
-- 🔍 OGP / canonical / sitemap / RSS 対応
-- 🧾 型安全なフロントマター（Zod）
-- 🤖 GitHub Actions で CI/CD 構築可能
+## 技術スタック
 
-## 📁 プロジェクト構成
+- **Framework**: Astro 4.5（MDX / Content Collections）
+- **Styling**: Tailwind CSS 3
+- **CMS**: microCMS（SDK: `microcms-js-sdk`）／ローカル Markdown にフォールバック
+- **Type Check**: TypeScript 5 + `@astrojs/check`
+- **SEO**: `@astrojs/sitemap`, RSS, robots.txt, 構造化データ（HowTo JSON-LD 等）
+
+## ディレクトリ構成
+
 ```
-├── public/ # 直配信アセット（favicons, 画像等）
+├── public/              # 直配信アセット（favicon, 画像など）
 ├── src/
-│ ├── components/ # UI コンポーネント（.astro/.tsx 等）
-│ ├── content/ # 記事やコンテンツ（blog コレクション等）
-│ ├── layouts/ # ページレイアウト
-│ └── pages/ # ルーティングされるページ
+│   ├── components/      # 共通 UI（Header, Hero, Breadcrumbs, TOC, CTA ほか）
+│   ├── content/         # ローカル記事（Content Collections, blog）
+│   ├── layouts/         # ページレイアウト
+│   ├── lib/             # microCMS クライアント・SEO ヘルパー・ブログデータ
+│   ├── pages/
+│   │   ├── blog/
+│   │   │   ├── [...slug].astro      # 記事詳細
+│   │   │   ├── [category]/          # カテゴリ一覧
+│   │   │   ├── index.astro          # 記事一覧
+│   │   │   └── search.astro         # サイト内検索
+│   │   ├── about.astro
+│   │   ├── privacy-policy.astro
+│   │   ├── index.astro
+│   │   ├── robots.txt.ts
+│   │   └── rss.xml.js
+│   ├── styles/
+│   └── consts.ts        # サイトタイトル・ディスクリプション
+├── drafts/              # 下書き・テンプレート置き場（デプロイ対象外）
 ├── astro.config.mjs
-├── package.json
-├── tsconfig.json
-└── README.md
+├── tailwind.config.cjs
+└── package.json
 ```
 
-## 🧑‍💻 開発コマンド
+## カテゴリ構成
+
+記事は 4 カテゴリで管理（`src/content/config.ts` の Zod schema）：
+
+| カテゴリ ID    | 内容                               |
+| ------------- | --------------------------------- |
+| `freelance`   | 独立／エージェント／単価判断       |
+| `programming` | 技術・実装 Tips                    |
+| `skills`      | キャリアアップ・スキル習得         |
+| `ai`          | AI 活用・副業・プロンプト          |
+
+## 開発コマンド
 
 ```bash
-# 依存関係インストール
-npm install
+npm install              # 依存インストール
+npm run dev              # 開発サーバ (http://localhost:4321)
+npm run build            # astro check + astro build → ./dist
+npm run preview          # ビルド結果のローカル確認
+```
 
-# 開発サーバー localhost:4321
-npm run dev
+## microCMS 連携
 
-# 本番ビルド（./dist へ出力）
-npm run build
+`.env`（本番はデプロイ先の環境変数）に以下を設定：
 
-# ビルドのローカル確認
-npm run preview
+```bash
+MICROCMS_SERVICE_DOMAIN=your-service-id
+MICROCMS_API_KEY=your-api-key
+# 任意（既定: blogs / v1）
+# MICROCMS_BLOG_ENDPOINT=blogs
+# MICROCMS_API_VERSION=v1
+```
 
-## 🔌 microCMS 連携設定
+microCMS 側で揃えておくフィールド：
 
-1. microCMS でブログ用 API を用意し、サービスドメインと API キーを取得します。
-2. プロジェクトルートに `.env`（本番ではデプロイ先の環境変数）を作成し、以下を設定します。
+- `title` / `description` / `category`（`programming` / `freelance` / `skills` / `ai`）
+- `slug`（任意。未設定時は microCMS の `id`）
+- `publishedAt` / `updatedAt` / `revisedAt`
+- `body` または `content`（リッチエディタ or Markdown）
+- `heroImage` / `eyecatch`（任意）
 
-   ```bash
-   MICROCMS_SERVICE_DOMAIN=your-service-id
-   MICROCMS_API_KEY=your-api-key
-   # 任意: API エンドポイント名を変更したい場合
-   # MICROCMS_BLOG_ENDPOINT=blogs
-   # 任意: API バージョンを変更したい場合
-   # MICROCMS_API_VERSION=v1
-   ```
+環境変数が未設定、または取得失敗時は `src/content/blog` のローカル記事にフォールバックします。
 
-3. microCMS 側で以下のフィールドを用意しておくと既存 UI と親和性が高まります。
-   - `title` (テキスト)
-   - `description` (テキスト)
-   - `category` (プルダウン or コンテンツ参照／ID が `programming` / `telework` / `skills` である前提)
-   - `slug` (テキスト、任意。未設定の場合は microCMS の `id` を使用)
-   - `publishedAt` (公開日時)
-   - `body` または `content` (リッチエディタ or Markdown フィールド)
-   - `heroImage` / `eyecatch` (画像フィールド、任意)
+## サイトマップ
 
-microCMS の環境変数が未設定、または取得に失敗した場合は従来どおり `src/content/blog` のローカル記事にフォールバックします。
+ビルド時に microCMS から全記事を取得し、`revisedAt` → `updatedAt` → `publishedAt` の優先順で `lastmod` を注入します（`astro.config.mjs`）。
+
+優先度 / 更新頻度：
+
+- トップ: `priority 1.0`, `daily`
+- `/blog/` 一覧・カテゴリトップ: `priority 0.9`, `daily`
+- 個別記事: `priority 0.7`, `weekly`
+- `/about/`, `/privacy-policy/`: `priority 0.6`, `monthly`
+
+## デプロイ
+
+静的サイト（SSG）として `./dist` を配信。WordPress は不採用（攻撃面削減のため、素の静的配信を優先）。
+
+## ライセンス
+
+Private.
